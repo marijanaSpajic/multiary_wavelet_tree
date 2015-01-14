@@ -5,38 +5,38 @@
 using namespace std;
 
 // Funkcija koja pretvara slova abecede u njihovu ACII vrijednost
-vector<int> BrojevnaAbeceda(char abeceda[], int kratnost){
-  vector<int> abeceda_broj;
+vector<int> NumberedAlphabet(char alphabet[], int ary){
+  vector<int> numbered_alphabet;
   int iter;
 
-  for(iter = 0; iter < sizeof(abeceda); iter++){
-	  abeceda_broj.push_back(abeceda[iter]);
+  for(iter = 0; iter < sizeof(alphabet); iter++){
+	  numbered_alphabet.push_back(alphabet[iter]);
   }
 
-  return abeceda_broj;
+  return numbered_alphabet;
 }
  
-// Funkcija koja brojevnu abecedu pretvara u popis kodnih rijeci s obzirom na kratnost
-vector<vector<int>> GenerirajKodneRijeci(vector<int> abeceda_broj, int kratnost) {
-  int iter, kvocijent, ostatak;
-  vector<int> kodna_rijec;
-  vector<vector<int>> kodne_rijeci;
+// Funkcija koja brojevnu abecedu pretvara u popis kodnih rijeci s obzirom na ary
+vector<vector<int>> GenerateCodeWords(vector<int> numbered_alphabet, int ary) {
+  int iter, quotient, remainder;
+  vector<int> code_word;
+  vector<vector<int>> coded_words;
   
   
-  for(iter = 0; iter < abeceda_broj.size(); iter++){
-	kvocijent = abeceda_broj[iter];
+  for(iter = 0; iter < numbered_alphabet.size(); iter++){
+	quotient = numbered_alphabet[iter];
 
 	do{
-	  ostatak = kvocijent%kratnost;
-	  kodna_rijec.push_back(ostatak);
-	  kvocijent /= kratnost;
-	} while(0 != kvocijent);
+	  remainder = quotient%ary;
+	  code_word.push_back(remainder);
+	  quotient /= ary;
+	} while(0 != quotient);
 
-	reverse(kodna_rijec.begin(), kodna_rijec.end());
-	kodne_rijeci.push_back(kodna_rijec);
-	kodna_rijec.clear();
+	reverse(code_word.begin(), code_word.end());
+	coded_words.push_back(code_word);
+	code_word.clear();
   }
   
-  return kodne_rijeci;
+  return coded_words;
 
 }
