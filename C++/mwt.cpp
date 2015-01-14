@@ -3,10 +3,11 @@
 #include <math.h>
 #include <sstream>
 #include <fstream>
+#include <assert.h>
 #include "mwt.h"
 
 using namespace std;
-
+/*
 int main(int argc, char* argv[]){
 
   if (argc < 3){
@@ -14,21 +15,43 @@ int main(int argc, char* argv[]){
 	exit(1);
   }
 
-  fstream dataset;
+  string line;
+  ifstream dataset;
   dataset.open(argv[1]);
   int ary = atoi(argv[2]);
+/*
+  std::string contents((std::istreambuf_iterator<char>(dataset)), 
+    std::istreambuf_iterator<char>()); 
+  const char *input = contents.c_str();
+  dataset.close();
+  cout << input << endl;
+  
+  //input[] = "ACCTAGG",
+*/
+  
+int main(){
 
-  const char input[] = "ACCTAGG", *newLetter;
-  vector<int> numbered_alphabet, code_word, layer;
-  vector<vector<int>> code_words, layers, coded_input;
-  char letter, alphabet[4] = {};
-  int iter1, 
-	  iter2 = 0, 
-	  //ary = 4,
+  const char input[] = "ACCTAGG", 
+	*newLetter;
+
+  vector<int> numbered_alphabet,
+	code_word,
+	layer;
+  
+  vector<vector<int>> code_words, 
+	layers, 
+	coded_input;
+
+  char letter,
+	   alphabet[4] = {};
+  
+  int ary = 4,
+	  iter1, 
+	  iter2 = 0,
 	  layer_number;
 
 
-  // Alphabet creation
+  // Create alphabet
   for (iter1 = 0; iter1 < sizeof(input); iter1++){
 	 letter = input[iter1];
 	 newLetter = strchr(alphabet, letter);
@@ -40,11 +63,12 @@ int main(int argc, char* argv[]){
 	 
   }
 
-  numbered_alphabet = NumberedAlphabet(alphabet, ary);
+  numbered_alphabet = NumberedAlphabet(alphabet);
   code_words = GenerateCodeWords(numbered_alphabet, ary);
   layer_number = ceil((7/(log((double)ary)/log(double(2)))));
+  
 
-  // Coding the input
+  // Coded input
   for (iter1 = 0; iter1 < sizeof(input); iter1++){
     for (iter2 = 0; iter2 < sizeof(alphabet); iter2++){
 	  if (input[iter1] == alphabet[iter2])
@@ -52,7 +76,7 @@ int main(int argc, char* argv[]){
 	}
   }
 
-  // Creating layers
+  // Create layers
   for (iter1 = 0; iter1 < layer_number; iter1++){
     for (iter2 = 0; iter2 < coded_input.size(); iter2++)
 	  layer.push_back(coded_input[iter2][iter1]);
@@ -61,34 +85,53 @@ int main(int argc, char* argv[]){
   }
   reverse(layers.begin(), layers.end());
 
-  typedef struct node {
-	node *previous;
-	vector<int> data;
-	vector<node*> next;
-  };
+  // Generate MWT
 
-  node root;
-  root.previous = NULL;
-  root.data = layers[ary-1];
+  // Start with root 
+  node *root, test;
+  root = InitRoot(ary);
+  root->data = layers[ary-1];
 
-  
-
-  for (iter1 = 0; iter1 < coded_input.size(); iter1++){
-	  for (iter2 = 0; iter2 < coded_input[iter1].size(); iter2++)
-		  cout << coded_input[iter1].at(iter2);
-	  cout << endl;
+  // Iterate over root (top layer) elements and recursively
+  // generate MW tree
+  for (iter1 = 0; iter1 < root->data.size(); iter1++){
+    CreateBranch(root, layers, ary-1, ary, iter1);
   }
+
+ 
+  /* Various tests
+
+  for (iter1 = layer_number - 1 ; iter1 >=0; iter1--){
+	for (iter2 = 0; iter2 < layers[iter1].size(); iter2++)
+		cout << layers[iter1][iter2];
+	cout << endl;
+  }
+
+  for (iter2 = 0; iter2 < root.data.size(); iter2++)
+    cout << root.data[iter2];
 
   for (iter1 = 0; iter1 < layer_number; iter1++){
 	for (iter2 = 0; iter2 < layers[iter1].size(); iter2++)
 		cout << layers[iter1][iter2];
 	cout << endl;
   }
-  /* Testing  
+   
+
+  for (iter1 = 0; iter1 < coded_input.size(); iter1++){
+	  for (iter2 = 0; iter2 < coded_input[iter1].size(); iter2++)
+		  cout << coded_input[iter1].at(iter2);
+	  cout << endl;
 
   for (iter2 = 0; iter2 < root.data.size(); iter2++)
 		cout << root.data[iter2];
 	cout << endl;
+  for (iter1 = 0; iter1 < coded_input.size(); iter1++){
+	  for (iter2 = 0; iter2 < coded_input[iter1].size(); iter2++)
+		  cout << coded_input[iter1].at(iter2);
+	  cout << endl;
+	}
+
+	cout << layer_number;
 
  for (iter1 = 0; iter1 < sizeof(alphabet); iter1++)
 	  if (alphabet[iter1] != NULL)
@@ -108,7 +151,7 @@ int main(int argc, char* argv[]){
   */
 
   getchar();
+  
 
-  dataset.close();
   return 0;
 }
