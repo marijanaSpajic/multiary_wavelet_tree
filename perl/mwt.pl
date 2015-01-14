@@ -74,7 +74,7 @@ sub rank{
 		$position = $count;
 		$count = 0;
 	}	
-	return $position;	
+	print "$position";	
 }
 
 #function select, returns position of the symbol with the given rank
@@ -126,10 +126,15 @@ sub select_mwt {
 }
 
 
-my $name = 'C:\Users\Nikola\Desktop\proba.txt'; #chomp($ARGV[0]);                      #file specified in argument
+my $name = 'C:\Users\Nikola\Desktop\proba.txt'; #$ARGV[0];                      #file specified in argument
 open (my $file, '<', $name) or die $!;    	#open file with given filename
-my $multiplicity = 5;
+
+my $multiplicity = 5;                           #$ARGV[1];
 my $num_layers  = get_num_layers($multiplicity);
+
+my $function = 'rank';                          #$ARGV[2];			#rank or select
+my $parameter1 = 15;				#$ARGV[3];			#for rank, this is position, and for select, this is rank
+my $parameter2 = "A";				#$ARGV[4];			#A, C, G or T
 
 
 #reading the characters from the given file (spliting the file to the array of characters)
@@ -155,6 +160,7 @@ foreach my $char (@characters){
 	
 	my $string = "" . $converted_chars[0];
 	
+	#using hash table as a tree
 	for (my $i=1; $i < $num_layers; $i++) {
 		unless (exists $mwt{$string}){
 			$mwt{$string} = [];
@@ -165,9 +171,16 @@ foreach my $char (@characters){
 	} 
 }
 
-select_mwt(2, "T", $num_layers, \%mwt);
 
-#rank(9, "C", $num_layers, \%mwt);
+if ($function eq 'rank'){
+	rank ($parameter1, $parameter2, $num_layers, \%mwt);
+}
+if ($function eq 'select'){
+	select_mwt ($parameter1, $parameter2, $num_layers, \%mwt);
+}
+
+#select_mwt(999999, "A", $num_layers, \%mwt);
+#rank(999999, "A", $num_layers, \%mwt);
 #print "@characters";                     #testing - reading file
 #my $proba = get_num_layers(5);           #testing - get_num_layers
 #my @proba = convert_to_base(67, 4, 5);   #testing - convert_to_base
