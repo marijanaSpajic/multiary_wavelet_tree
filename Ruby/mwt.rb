@@ -39,3 +39,17 @@ for character in alphabet_ascii do
 	alphabet_basen << character.to_s(base)
 	end
 
+transformation = { alphabet[0] => alphabet_basen[0], alphabet[1] => alphabet_basen[1], alphabet[2] => alphabet_basen[2], alphabet[3] => alphabet_basen[3] }
+
+sequence_transformed = []
+
+i = 0
+
+while i<sequence.length do
+	sequence_transformed << transformation[sequence[i]]
+	i+=1
+	end
+
+
+
+
