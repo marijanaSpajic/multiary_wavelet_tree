@@ -98,6 +98,7 @@ sub select_mwt {
 	my $j=0;
 	my $position = 0;
 	
+	#counting characters that match
 	for (my $i=$layers-1; $i >= 0; $i--){
 		
 		while ($rank > $count){			
@@ -125,16 +126,15 @@ sub select_mwt {
 	
 }
 
+my $name = $ARGV[0];                      					#file specified in argument
+open (my $file, '<', $name) or die $!;    					#open file with given filename
 
-my $name = 'C:\Users\Nikola\Desktop\proba.txt'; #$ARGV[0];                      #file specified in argument
-open (my $file, '<', $name) or die $!;    	#open file with given filename
-
-my $multiplicity = 5;                           #$ARGV[1];
+my $multiplicity = $ARGV[1];
 my $num_layers  = get_num_layers($multiplicity);
 
-my $function = 'rank';                          #$ARGV[2];			#rank or select
-my $parameter1 = 15;				#$ARGV[3];			#for rank, this is position, and for select, this is rank
-my $parameter2 = "A";				#$ARGV[4];			#A, C, G or T
+my $function = $ARGV[2];							#rank or select
+my $parameter1 = $ARGV[3];							#for rank, this is position, and for select, this is rank
+my $parameter2 = $ARGV[4];							#A, C, G or T
 
 
 #reading the characters from the given file (spliting the file to the array of characters)
@@ -179,14 +179,6 @@ if ($function eq 'select'){
 	select_mwt ($parameter1, $parameter2, $num_layers, \%mwt);
 }
 
-#select_mwt(999999, "A", $num_layers, \%mwt);
-#rank(999999, "A", $num_layers, \%mwt);
-#print "@characters";                     #testing - reading file
-#my $proba = get_num_layers(5);           #testing - get_num_layers
-#my @proba = convert_to_base(67, 4, 5);   #testing - convert_to_base
-#print "@proba";
-
-#print <$file>;                           #testing - reading the file
 
 close($file);                             #close the input file
 
