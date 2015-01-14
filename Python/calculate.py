@@ -31,3 +31,28 @@ def change_base(number, base, num_of_levels):
     while len(number_in_list) != num_of_levels:
         number_in_list.insert(0, 0)
     return number_in_list
+
+# function that calculates how many times
+# does the function rank() has to be called
+# returns the answer
+def get_rank(root, position, symbol_list):
+    private_symbol_list = symbol_list[:]
+    node = root
+    while len(private_symbol_list) > 0:
+        symbol = private_symbol_list.pop(0)
+        result = rank(node, position, symbol)
+        if len(private_symbol_list) == 0:
+            break
+        node = node.children[symbol]
+        position = result
+    return result
+
+# function that iterates through data on a given
+# node and returns number of symbols in data
+def rank(node, position, symbol):
+    counter = 0
+    data = node.get_data()
+    for i in range(position):
+        if data[i] == symbol:
+            counter += 1
+    return counter

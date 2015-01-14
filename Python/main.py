@@ -37,7 +37,7 @@ if __name__ == "__main__":
     # get info from input
     while True:
         command = input("> ")
-        while command[0] != "r" or command[0] != "s" or command[0] != "e":
+        while command[0] != "r" and command[0] != "s" and command[0] != "e":
             print("That command does not exist!\n")
             print ("Possible commands:\n")
             print ("1) rank   -> r(position,symbol)\n")
@@ -52,7 +52,8 @@ if __name__ == "__main__":
         symbol = command[index+1:index2]
         if command[0] == "r":
             symbol_list = dictionary[symbol]
-            result = get_rank(root, symbol_list)
+            result = get_rank(root, position, symbol_list)
+            print ("rank(" + str(position) + "," + symbol + ") = " + str(result) + "\n")
         else:
             symbol_list = dictionary[symbol]
             #result = select(leaf!!!!, symbol)
