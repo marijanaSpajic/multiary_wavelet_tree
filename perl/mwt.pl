@@ -15,22 +15,20 @@ sub get_num_layers{
 }
 
 
-#converting number from base 10 to wanted base by taking modulus division and division
+#converting number from base 10 to wanted base by taking modulus as next digit
 sub convert_to_base{
 	my $num = shift;
 	my $base = shift;
-	my $place = 0;
 	my $digit = 0;
-	my $converted = 0;
+	my @converted = ();
 	
 	while ($num > 0){
 		$digit = $num % $base;
-		$converted = $converted + $digit*(10 ** $place);    #numbers must go from back to front, ** is exp
-		$place = $place + 1;
+		unshift(@converted, $digit);
 		$num = floor($num / $base);
 	}
 	
-	return $converted;
+	return @converted;
 }
 
 my $name = $ARGV[0];                      #file specified in argument
@@ -39,8 +37,8 @@ open (my $file, '<', $name) or die $!;    #open file with given filename
 
 
 #my $proba = get_num_layers(5);           testing - get_num_layers
-#my $proba = convert_to_base(67, 4);      testing - convert_to_base
-#print $proba;
+my @proba = convert_to_base(67, 4);      testing - convert_to_base
+print "@proba";
 
 #print <$file>;                           testing - reading the file
 
