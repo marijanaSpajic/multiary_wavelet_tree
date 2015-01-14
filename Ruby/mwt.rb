@@ -1,5 +1,6 @@
 include Math
 
+# multiary wavelet tree implementation
 # currently, the script works only for trees up to and including base 4
 
 arity = ARGV[0]
