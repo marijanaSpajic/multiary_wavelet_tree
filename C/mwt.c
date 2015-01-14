@@ -12,7 +12,7 @@ struct Node {
 };
 
 //create node
-Node * createTree(char *inputStream, int fileLength, int *alphabet, int arity, int numOfDigits){
+Node * createTree(char *inputStream, int fileLength, int **alphabet, int arity, int numOfDigits){
 
     Node* root = (Node *) malloc(sizeof(Node));
     (*root).data = (int *)malloc(fileLength*sizeof(int));
@@ -25,12 +25,13 @@ Node * createTree(char *inputStream, int fileLength, int *alphabet, int arity, i
         (*child).data = (int *)malloc(sizeof(int));
         (*child).data[0] = -1;
         (*root).child[i*sizeof(Node)] = *child;
+        printf("%d \n", sizeof((*child).data));
     }
 
     //for each character in input stream
     for (i = 0; i < fileLength; i++){
         int c = inputStream[i];
-        int *codeValue = &alphabet[c];
+        int *codeValue = alphabet[c];
 
         //save each digit to appropriate node
         int j;
@@ -40,6 +41,7 @@ Node * createTree(char *inputStream, int fileLength, int *alphabet, int arity, i
             //put first digit in root
             if(j==0){
                 (*root).data[(*root).numOfValues] = digit;
+                printf("root data: %d", (*root).data[(*root).numOfValues]);
                 (*root).numOfValues++;
             }
             else {
@@ -76,6 +78,7 @@ Node * createTree(char *inputStream, int fileLength, int *alphabet, int arity, i
             }
         }
     }
+    printf("kraj");
     return root;
 }
 
@@ -111,7 +114,8 @@ int main (int argc, char *argv[]){
         exit(1);
     }
 
-    int * alphabet[128] = {NULL};
+    int ** alphabet[128] = {NULL};
+    //printf("%p\n", *alphabet);
     int arity = atoi(argv[2]);
     int treeLayers = ceil(7/log2(arity));
     printf("Number of layers: %d \n", treeLayers);
@@ -153,7 +157,7 @@ int main (int argc, char *argv[]){
         }
     }
 
-    Node * root = createTree(&inputStream[0], fileLength, &alphabet[0][0], arity, treeLayers);
+    Node * root = createTree(&inputStream[0], fileLength, &alphabet[0], arity, treeLayers);
     for(j = 0; j < fileLength; j++){
         printf("Podaci u root: %d", (*root).data[j]);
     }
