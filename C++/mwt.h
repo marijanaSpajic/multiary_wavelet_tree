@@ -4,6 +4,7 @@
 
 using namespace std;
 
+// Funkcija koja pretvara slova abecede u njihovu ACII vrijednost
 vector<int> BrojevnaAbeceda(char abeceda[], int kratnost){
   vector<int> abeceda_broj;
   int iter;
@@ -15,6 +16,7 @@ vector<int> BrojevnaAbeceda(char abeceda[], int kratnost){
   return abeceda_broj;
 }
  
+// Funkcija koja brojevnu abecedu pretvara u popis kodnih rijeci s obzirom na kratnost
 vector<vector<int>> GenerirajKodneRijeci(vector<int> abeceda_broj, int kratnost) {
   int iter, kvocijent, ostatak;
   vector<int> kodna_rijec;
