@@ -88,7 +88,7 @@ while i<sequence.length do
 #while i<base do
 #	j=0
 #	while j<=base do
-#		layers[i+1] << layers[i]
+#		layers[i+1] << layers[i].clone
 #		j+=1
 #		end
 #	i+=1
@@ -97,10 +97,6 @@ while i<sequence.length do
 
 # this bit is pretty nasty and one should strive to do better
 # problem: ruby uses pointers instead of making copies of arrays in the loop above
-
-
-
-
 
 if base == 3
 	layers = [[],[[],[],[],[]],[[[],[],[],[]],[[],[],[],[]],[[],[],[],[]],[[],[],[],[]]]]
@@ -124,13 +120,26 @@ for item in sequence_transformed do
 		end
 	end
 
+inp = [""]
 
-for layer in layers
-	print "\n"
-	print layer
-	print "\n"
+while inp[0] != "exit" do
+	print "\nTree built.\nRank or Select?\n\n[ rank <position> <symbol> ]   [ select <rank> <symbol> ]  [ exit ]\n\n"
+
+	inp = gets
+
+	inp = inp.split
+
+	if inp[0] == "rank"
+		position = inp[]
+		# do rank
+		end
+
+	if inp[0] == "select"
+		# do select
+		end
+	
 	end
 
 
-
+print "The End"
 
