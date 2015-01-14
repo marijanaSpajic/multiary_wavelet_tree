@@ -27,7 +27,7 @@ class Node(Root):
         self.data = []
         self.children = {}
         self.list_of_signs = []
-        self.parent_obj = parent_obj
+        self.parent = parent_obj
     
     def put_data(self, list_of_remaining_signs):
         self.list_of_signs = list_of_remaining_signs[:]
