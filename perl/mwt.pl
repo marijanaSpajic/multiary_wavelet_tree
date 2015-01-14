@@ -73,11 +73,58 @@ sub rank{
 		$key=$key . $characters[$i];
 		$position = $count;
 		$count = 0;
+	}	
+	return $position;	
+}
+
+#function select, returns position of the symbol with the given rank
+sub select_mwt {
+	my $rank = shift;
+	my $symbol = shift;
+	my $layers = shift;
+	my $mwt = shift;
+	
+	my $count = 0;
+	my @characters = convert_to_base(ord($symbol), $layers);
+	my %tree = %$mwt;
+
+	my $key ="";
+	
+	foreach my $character (@characters) {
+		$key = $key . $character;
+	}
+	$key = substr($key, 0, -1);
+	
+	my $j=0;
+	my $position = 0;
+	
+	for (my $i=$layers-1; $i > 0; $i--){
+		
+		while ($rank > $count){
+			$j++;
+			
+			if (exists ($tree{$key}[$j])){
+			if ($characters[$i] == $tree{$key}[$j]){
+				$count++;
+			}}
+		}
+		$rank = $j+1;
+		$position = $j;
+		$j=0;
+		$count = 0;
+		
+		$key = substr($key, 0, -1);
+		if ($key eq ""){
+			$key='root';
+		}
+		
 	}
 	
-	return $position;
+	print "$position";
+	
 	
 }
+
 
 my $name = 'C:\Users\Nikola\Desktop\proba.txt'; #chomp($ARGV[0]);                      #file specified in argument
 open (my $file, '<', $name) or die $!;    	#open file with given filename
@@ -118,7 +165,7 @@ foreach my $char (@characters){
 	} 
 }
 
-
+select_mwt(1, "C", $num_layers, \%mwt);
 
 #rank(9, "C", $num_layers, \%mwt);
 #print "@characters";                     #testing - reading file
