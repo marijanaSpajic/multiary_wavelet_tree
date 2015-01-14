@@ -11,6 +11,7 @@ class Root(object):
         self.list_of_signs = list_of_signs[:]
         self.index = self.list_of_signs.pop(0)
         self.data.append(self.index)
+        
         if self.index not in self.children:
             self.create_child(self.index)
         self.children[self.index].put_data(self.list_of_signs)
@@ -31,8 +32,8 @@ class Node(Root):
     def put_data(self, list_of_remaining_signs):
         self.list_of_signs = list_of_remaining_signs[:]
         self.index = self.list_of_signs.pop(0)
-        #import pdb; pdb.set_trace()
         self.data.append(self.index)
+        
         if len(self.list_of_signs) > 0:
             if self.index not in self.children:
                 self.create_child(self.index)

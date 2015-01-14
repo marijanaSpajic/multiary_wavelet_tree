@@ -1,4 +1,5 @@
 import math
+import mwt
 
 # returns number of layers/levels in a MWT
 def get_number_of_layers(multiplicity):
@@ -17,7 +18,6 @@ def create_node_layers(num_of_layers):
     for i in range(num_of_layers - 1):
         node_layers.append([])
     
-
 # function for changing base of a number
 # function is also padding a list (fills list with 0s)
 def change_base(number, base, num_of_levels):
@@ -31,4 +31,3 @@ def change_base(number, base, num_of_levels):
     while len(number_in_list) != num_of_levels:
         number_in_list.insert(0, 0)
     return number_in_list
-
