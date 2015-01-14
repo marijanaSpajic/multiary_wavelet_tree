@@ -10,30 +10,60 @@ vector<int> NumberedAlphabet(char alphabet[]){
   int iter;
 
   for(iter = 0; iter < sizeof(alphabet); iter++){
-	  numbered_alphabet.push_back(alphabet[iter]);
+	numbered_alphabet.push_back(alphabet[iter]);
   }
 
   return numbered_alphabet;
 }
+
+// Translates a numbered alphabet character into code word (depending on arity)
+vector<int> WordCoder(int quotient, int ary, int number_of_digits){
+  int digits = 1, remainder = 0;
+  vector<int> code_word;
+    while(0 != quotient){
+	  remainder = quotient%ary;
+	  code_word.push_back(remainder);
+	  digits++;
+	  quotient /= ary;
+	}
+	while(digits < (number_of_digits+1)){
+	  code_word.push_back(0);
+	  digits++;
+	}
+
+	reverse(code_word.begin(), code_word.end());
+	return code_word;
+}
  
-// Translates numbered alphabet into coded words (dependatn on arity)
-vector<vector<int>> GenerateCodeWords(vector<int> numbered_alphabet, int ary) {
-  int iter, quotient, remainder;
+// Translates numbered alphabet into coded words (depending on arity)
+vector<vector<int>> GenerateCodeAlphabet(vector<int> numbered_alphabet, int ary, int number_of_digits) {
+  int iter, quotient, remainder = 0;
   vector<int> code_word;
   vector<vector<int>> coded_words;
   
   
   for(iter = 0; iter < numbered_alphabet.size(); iter++){
-	quotient = numbered_alphabet[iter];
+/*	quotient = numbered_alphabet[iter];
 
-	do{
+	int digits = 1;
+	while(0 != quotient){
 	  remainder = quotient%ary;
 	  code_word.push_back(remainder);
+	  digits++;
 	  quotient /= ary;
-	} while(0 != quotient);
+	}
+	while(digits < (number_of_digits+1)){
+	  code_word.push_back(0);
+	  digits++;
+	}
 
 	reverse(code_word.begin(), code_word.end());
-	coded_words.push_back(code_word);
+
+
+	*/
+	code_word = WordCoder(numbered_alphabet[iter], ary, number_of_digits);
+
+	coded_words.push_back(code_word);	
 	code_word.clear();
   }
   
@@ -49,23 +79,23 @@ typedef struct node {
 } node;
 
 // Initializes non-root node
-node* InitNode(node &parent, int ary){
-	node *current = new node;
-    current->previous = NULL;
-    for(int iter = 0; iter < ary; iter++){
-	  current->next.push_back(NULL);
-    }
-	return current;
-   }
+node* InitNode(node parent, int ary){
+  node *current = new node;
+  current->previous = &parent;
+  for(int iter = 0; iter < ary; iter++){
+	current->next.push_back(NULL);
+  }
+  return current;
+}
 
 // Initalizes root node
 node* InitRoot(int ary){
-    node *root = new node;
-	for(int iter = 0; iter < ary; iter++){
-		root->next.push_back(NULL);
-	}
-	return root;
+  node *root = new node;
+  for(int iter = 0; iter < ary; iter++){
+  root->next.push_back(NULL);
   }
+  return root;
+}
 
 // Recursive; generates a single MW tree branch (down to the root)
 void CreateBranch(node *parent, vector<vector<int>> layers, int layer, int ary, int index){
@@ -73,7 +103,7 @@ void CreateBranch(node *parent, vector<vector<int>> layers, int layer, int ary, 
 
   // Return if at bottom layer
   if (layer == 0)
-	  return;
+	return;
 
   // Create child if it does not exist
   else if (NULL == parent->next[layers[layer][index]]){
@@ -85,13 +115,34 @@ void CreateBranch(node *parent, vector<vector<int>> layers, int layer, int ary, 
 	CreateBranch(current, layers, layer-1, ary, index);
     
 	// Add data to existing child
-  } else if (NULL != parent->next[layers[layer][index]]){
+  } 
+  else if (NULL != parent->next[layers[layer][index]]){
 
-	  current = parent->next[layers[layer][index]]; 
-	  current->data.push_back(layers[layer-1][index]);
-      CreateBranch(current, layers, layer-1, ary, index);
+	current = parent->next[layers[layer][index]]; 
+	current->data.push_back(layers[layer-1][index]);
+    CreateBranch(current, layers, layer-1, ary, index);
   }
-	  
-
-
 }
+
+// Calculates rank of symbol.
+int Rank(int position, vector<int> symbol, node *search){
+  vector<int> next;
+  int counter = 0, current = symbol[0];
+
+  
+  for (int iter = 0; iter < position; iter++){
+	if(current == search->data[iter])
+		counter++;
+  }
+  
+  if (1 == symbol.size())
+	  return counter;
+  else
+  {
+	for (int iter = 1; iter < symbol.size(); iter++)
+	next.push_back(symbol[iter]);
+    return Rank(counter, next, search->next[current]);
+  }
+  
+}
+

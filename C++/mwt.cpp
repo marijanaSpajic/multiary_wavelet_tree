@@ -7,32 +7,35 @@
 #include "mwt.h"
 
 using namespace std;
-/*
+
 int main(int argc, char* argv[]){
 
-  if (argc < 3){
-	cout << "Not enough parameters" <<endl;
+  if (argc != 3){
+	cout << "Expecting " << 2 << "parameters: filename, arity." <<endl;
 	exit(1);
   }
 
-  string line;
-  ifstream dataset;
-  dataset.open(argv[1]);
   int ary = atoi(argv[2]);
-/*
-  std::string contents((std::istreambuf_iterator<char>(dataset)), 
-    std::istreambuf_iterator<char>()); 
-  const char *input = contents.c_str();
-  dataset.close();
-  cout << input << endl;
   
-  //input[] = "ACCTAGG",
-*/
+  FILE *file;
+  file = fopen(argv[1], "r");
   
-int main(){
+  fseek(file, 0, SEEK_END);
+  int length = ftell(file);
+  fseek(file, 0, SEEK_SET);
 
-  const char input[] = "ACCTAGG", 
-	*newLetter;
+  char *input;
+  input = new char[length+5];
+
+  int character, input_size = 0;
+  while((character = fgetc(file)) != EOF){
+	  input[input_size] = character;
+	  input_size++;
+  }
+
+  fclose(file);
+
+  const char *newLetter;
 
   vector<int> numbered_alphabet,
 	code_word,
@@ -45,14 +48,14 @@ int main(){
   char letter,
 	   alphabet[4] = {};
   
-  int ary = 4,
-	  iter1, 
+  int iter1, 
 	  iter2 = 0,
 	  layer_number;
 
 
+
   // Create alphabet
-  for (iter1 = 0; iter1 < sizeof(input); iter1++){
+  for (iter1 = 0; iter1 < input_size; iter1++){
 	 letter = input[iter1];
 	 newLetter = strchr(alphabet, letter);
 	 
@@ -63,13 +66,13 @@ int main(){
 	 
   }
 
-  numbered_alphabet = NumberedAlphabet(alphabet);
-  code_words = GenerateCodeWords(numbered_alphabet, ary);
   layer_number = ceil((7/(log((double)ary)/log(double(2)))));
-  
+  numbered_alphabet = NumberedAlphabet(alphabet);
+  code_words = GenerateCodeAlphabet(numbered_alphabet, ary, layer_number);
+
 
   // Coded input
-  for (iter1 = 0; iter1 < sizeof(input); iter1++){
+  for (iter1 = 0; iter1 < input_size; iter1++){
     for (iter2 = 0; iter2 < sizeof(alphabet); iter2++){
 	  if (input[iter1] == alphabet[iter2])
 		  coded_input.push_back(code_words[iter2]);
@@ -86,19 +89,27 @@ int main(){
   reverse(layers.begin(), layers.end());
 
   // Generate MWT
-
+ 
   // Start with root 
   node *root, test;
   root = InitRoot(ary);
-  root->data = layers[ary-1];
+  root->data = layers[layer_number-1];
 
   // Iterate over root (top layer) elements and recursively
   // generate MW tree
   for (iter1 = 0; iter1 < root->data.size(); iter1++){
-    CreateBranch(root, layers, ary-1, ary, iter1);
+    CreateBranch(root, layers, layer_number-1, ary, iter1);
   }
 
- 
+  for(iter1 = 0; iter1 < code_words.size(); iter1++)
+	code_word = code_words[iter1];
+
+
+  code_word = WordCoder((int)'A', ary, layer_number);
+
+  int rank = Rank(5, code_word, root);
+  cout << rank << endl;
+
   /* Various tests
 
   for (iter1 = layer_number - 1 ; iter1 >=0; iter1--){
@@ -115,8 +126,7 @@ int main(){
 		cout << layers[iter1][iter2];
 	cout << endl;
   }
-   
-
+  
   for (iter1 = 0; iter1 < coded_input.size(); iter1++){
 	  for (iter2 = 0; iter2 < coded_input[iter1].size(); iter2++)
 		  cout << coded_input[iter1].at(iter2);
@@ -151,7 +161,5 @@ int main(){
   */
 
   getchar();
-  
-
   return 0;
 }
