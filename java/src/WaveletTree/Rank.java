@@ -5,21 +5,31 @@ import java.util.Objects;
 
 public class Rank {
 	
-	public static void Rank(int number, String character, ArrayList levels) {
-		int i;
+	public static void RankFunction(int number, String character, String queue, int cardinality) {
+		queue = queue.replace("\r\n", "").replace("\n", "");
+		 int length = queue.length()*cardinality;
+		int i = 0, nextNumber = 0;
+		int firstNumber = number;
+		String a = "";
 		
-		System.out.println(levels.get(0));
-		
-		for(i = 0; i < levels.size(); i++) {
-			//Recursion(number, character, levels.get(i));
+		while(i < length) {
+			a = WaveletTree.ReturnLevel(queue, cardinality, i);
+			System.out.println(firstNumber + "," + character.charAt(i) + "," + a);
+			nextNumber = Recursion(firstNumber, character.charAt(i), a);
+			firstNumber = nextNumber;
+			i++;
 		}
-		
+		System.out.println("Rank(" + number + "," + character + ") = " + nextNumber);
 	}
 	
-	/*public static void Recursion(int number, String character, Object level) {
-		int i;
-		for (i = 0; i < level.toString().length(); i++) {
-			
+	public static int Recursion(int number, char character, String level) {	
+		int i, count = 0;
+		
+		for(i = 0; i < number; i++) {
+			if(character == level.charAt(i)) {
+				count++;
+			}
 		}
-	}*/
+		return count;
+	}
 }
