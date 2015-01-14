@@ -67,22 +67,24 @@ def get_select(root, rank, symbol_list):
     for i in symbol_list[:-1]:
         node = node.children[i]
     reversed_symbol_list = symbol_list[::-1]
-    # it could have been normal list with list.pop()
-    # OVO TREBA MALO PROMIJENITI
+    
     while len(reversed_symbol_list) > 0 :
         symbol = reversed_symbol_list.pop(0)
         result = select(node, rank, symbol)
-        #if result == -1 !
-        #if result == -2 !
+        if result == -1:
+            return -1
+        if result == -2:
+            return -2
         if len(reversed_symbol_list) == 0:
             break
         node = node.parent
         rank = result + 1
-    #PRIPAZITI NA SLUCAJ KADA U NIZU NEMA DOVOLJNO
     return result
     
 # function that iterates through data on a given node
-# and returns the
+# and returns the index of a symbol in data
+# returns -1 if there aren't enough symbols in input file
+# returns -2 if there aren't enough symbols in node.data
 def select(node, rank, symbol):
     counter = 0
     data = node.get_data()
@@ -93,8 +95,4 @@ def select(node, rank, symbol):
             counter += 1
         if counter == rank:
             return i
-    return -2
-
-
-
-
+    return -1
