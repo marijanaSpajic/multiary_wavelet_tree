@@ -98,21 +98,21 @@ sub select_mwt {
 	my $j=0;
 	my $position = 0;
 	
-	for (my $i=$layers-1; $i > 0; $i--){
+	for (my $i=$layers-1; $i >= 0; $i--){
 		
-		while ($rank > $count){
-			$j++;
-			
+		while ($rank > $count){			
 			if (exists ($tree{$key}[$j])){
 			if ($characters[$i] == $tree{$key}[$j]){
 				$count++;
 			}}
+			$j++;
 		}
-		$rank = $j+1;
+		$rank = $j;
 		$position = $j;
 		$j=0;
 		$count = 0;
 		
+		print "$key ";
 		$key = substr($key, 0, -1);
 		if ($key eq ""){
 			$key='root';
@@ -165,7 +165,7 @@ foreach my $char (@characters){
 	} 
 }
 
-select_mwt(1, "C", $num_layers, \%mwt);
+select_mwt(2, "T", $num_layers, \%mwt);
 
 #rank(9, "C", $num_layers, \%mwt);
 #print "@characters";                     #testing - reading file
