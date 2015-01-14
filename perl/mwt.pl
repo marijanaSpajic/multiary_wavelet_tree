@@ -41,15 +41,24 @@ sub convert_to_base{
 	return @converted;
 }
 
-##my $name = $ARGV[0];                      #file specified in argument
-##open (my $file, '<', $name) or die $!;    #open file with given filename
+my $name = 'C:\Users\Nikola\Desktop\proba.txt'; #chomp($ARGV[0]);                      #file specified in argument
+open (my $file, '<', $name) or die $!;    	#open file with given filename
+
+#reading the characters from the given file (spliting the file to the array of characters)
+my @characters = ();
+while(<$file>) {
+						#$_ = lc($_); # convert everything to lowercase  
+    @characters = split (//, $_);  
+}
+
+print "@characters";
 
 
 
 #my $proba = get_num_layers(5);           #testing - get_num_layers
-my @proba = convert_to_base(67, 4, 5);    #testing - convert_to_base
-print "@proba";
+#my @proba = convert_to_base(67, 4, 5);    #testing - convert_to_base
+#print "@proba";
 
 #print <$file>;                           #testing - reading the file
 
-##close($file);                             #close the input file
+close($file);                             #close the input file
