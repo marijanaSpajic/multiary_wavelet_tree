@@ -63,7 +63,9 @@ int main (int argc, char *argv[]){
             }
             i++;
             }
+    fclose(file);
 
+    //test code values of alphabet
     int j;
     int k = 0;
     for (j = 0; j < 128; j++){
@@ -75,5 +77,12 @@ int main (int argc, char *argv[]){
         }
     }
 
-    fclose(file);
+    //create and fill tree layers
+    int layers[treeLayers][fileLength];
+    for(j = 0; j < fileLength; j++){
+        int c = inputStream[j];
+        for(k = 0; k < treeLayers; k++){
+            layers[k][j] = alphabet[c][k];
+        }
+    }
 }
