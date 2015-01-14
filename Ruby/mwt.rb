@@ -1,9 +1,15 @@
+include Math
+
 #arity = ARGV[0]
 #filepath = ARGV[1]
 arity = "4"
 filepath = "../generate_inputs/inputs/input_3"
 
 arity = arity.to_i
+base = log(arity,2)
+base = 7/base
+base = base.ceil
+base = base.to_i
 
 # assuming that the input file is a FASTA file
 
@@ -30,8 +36,6 @@ for character in alphabet do
 alphabet_basen = []
 
 for character in alphabet_ascii do
-	alphabet_basen << character.to_s(arity)
+	alphabet_basen << character.to_s(base)
 	end
 
-print "\n"
-print alphabet_basen
