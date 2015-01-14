@@ -34,15 +34,55 @@ sub convert_to_base{
 	while ($size_converted < $base){
 		unshift (@converted, 0);
 		$size_converted = $size_converted + 1;
+	}	
+	return @converted;
+}
+
+#calculating rank of the symbol
+sub rank{
+	my $position = shift;
+	my $symbol = shift;
+	my $layers = shift;
+	my $mwt = shift;	
+	
+	my $count = 0;
+	my $j = 0;
+	
+	my @characters = convert_to_base(ord($symbol), $layers);
+	my %tree = %$mwt;
+	
+	#checking if the digits are in the wright place in the tree, first root, then a rest of tree
+	for (my $j = 0; $j < $position; $j++){
+		if ($characters[0] == $tree{'root'}[$j]){
+			$count++;
+		}
+	}
+	$position = $count;
+	$count = 0;
+	
+	my $key = $characters[0];
+	
+	for (my $i=1; $i < $layers; $i++){
+		for (my $j = 0; $j < $position; $j++){
+			if (exists ($tree{$key}[$j])){
+				
+			if ($characters[$i] == $tree{$key}[$j]){
+				$count++;
+			}}
+		}
+		$key=$key . $characters[$i];
+		$position = $count;
+		$count = 0;
 	}
 	
+	return $position;
 	
-	return @converted;
 }
 
 my $name = 'C:\Users\Nikola\Desktop\proba.txt'; #chomp($ARGV[0]);                      #file specified in argument
 open (my $file, '<', $name) or die $!;    	#open file with given filename
-my $num_layers = 4;
+my $multiplicity = 5;
+my $num_layers  = get_num_layers($multiplicity);
 
 
 #reading the characters from the given file (spliting the file to the array of characters)
@@ -53,34 +93,34 @@ while(<$file>) {
 }
 
 my @root = ();
-my %hash_table=();
+my %mwt=();
 
-#converting characters and putting them into the tree
+#converting characters and putting them into the mw tree
 foreach my $char (@characters){
 	
 	my $char_ord = ord($char);
 	my @converted_chars = convert_to_base($char_ord, $num_layers);
 	
-	unless (exists $hash_table{'root'}){
-		$hash_table{'root'} = [];
+	unless (exists $mwt{'root'}){
+		$mwt{'root'} = [];
 	}
-	push ($hash_table{'root'}, $converted_chars[0]);
+	push ($mwt{'root'}, $converted_chars[0]);
 	
 	my $string = "" . $converted_chars[0];
 	
 	for (my $i=1; $i < $num_layers; $i++) {
-		#print $string; print " ";
-		unless (exists $hash_table{$string}){
-			$hash_table{$string} = [];
+		unless (exists $mwt{$string}){
+			$mwt{$string} = [];
 		}
-		push ($hash_table{$string}, $converted_chars[$i]);
+		push ($mwt{$string}, $converted_chars[$i]);
 		
 		$string = $string . $converted_chars[$i];
-		
-		#print $converted_chars[$i]; print " ";
 	} 
 }
 
+
+
+#rank(9, "C", $num_layers, \%mwt);
 #print "@characters";                     #testing - reading file
 #my $proba = get_num_layers(5);           #testing - get_num_layers
 #my @proba = convert_to_base(67, 4, 5);   #testing - convert_to_base
