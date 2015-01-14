@@ -2,10 +2,10 @@ include Math
 
 # currently, the script works only for trees up to and including base 4
 
-#arity = ARGV[0]
-#filepath = ARGV[1]
-arity = "4"
-filepath = "../generate_inputs/inputs/input_3"
+arity = ARGV[0]
+filepath = ARGV[1]
+#arity = "4"
+#filepath = "../generate_inputs/inputs/input_3"
 
 arity = arity.to_i
 base = log(arity,2)
