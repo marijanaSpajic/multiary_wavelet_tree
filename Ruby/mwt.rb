@@ -11,6 +11,65 @@ base = 7/base
 base = base.ceil
 base = base.to_i
 
+
+def findRank(position, symbol, i, layers)
+	count = 0
+
+	if i==0
+		j=0
+		while j<= position do
+			if layers[0][j] == symbol[i]
+				count+=1
+				end
+			j+=1
+			end
+		end
+
+	if i==1
+		j=0
+		while j<= position do
+			if layers[1][symbol[0].to_i][j] == symbol[i]
+				count+=1
+				end
+			j+=1
+			end
+		end
+
+
+	if i==2
+		j=0
+		while j<= position do
+			if layers[2][symbol[0].to_i][symbol[1].to_i][j] == symbol[i]
+				count+=1
+				end
+			j+=1
+			end
+		end
+
+	if i==3
+		j=0
+		while j<= position do
+			if layers[3][symbol[0].to_i][symbol[1].to_i][symbol[2].to_i][j] == symbol[i]
+				count+=1
+				end
+			j+=1
+			end
+		end	
+
+	position = count
+
+	i+=1
+
+	if i<symbol.length
+
+		position = findRank(position, symbol, i, layers)
+	else
+		return position
+		end
+
+end
+
+
 # reading input file, assuming that the input is a FASTA file
 
 sequence = ""
@@ -130,16 +189,32 @@ while inp[0] != "exit" do
 	inp = inp.split
 
 	if inp[0] == "rank"
-		position = inp[]
+		position = inp[1].to_i
+		symbol = inp[2]
+		symbol_transformed = transformation[symbol]
+
 		# do rank
+		# 4-level tree
+
+		res = findRank(position, symbol_transformed, 0, layers)
+
+		
+
+		print res
+		print "\n"
+
 		end
 
 	if inp[0] == "select"
+		rank = inp[1].to_i
+		symbol = inp[2]
+		symbol_transformed = transformation[symbol]
+	
 		# do select
 		end
 	
 	end
 
 
-print "The End"
+print "The End\n\n"
 
