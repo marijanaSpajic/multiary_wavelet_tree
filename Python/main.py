@@ -12,23 +12,21 @@ input_string = input_file.readline().strip()
 
 if __name__ == "__main__":
     # calculating needed information
-    num_of_layers = base = get_number_of_layers(multiary)
-    layers = create_layers(num_of_layers)
-
-    # filling the layers, preparing data for MWT creation
-    dictionary = {}
-    for sign in input_string:
-        if sign in dictionary:
-            counter = 0
-            for s in dictionary[sign]:
-                layers[counter].append(s)
-                counter += 1
-        else:
-            dictionary[sign] = change_base(ord(sign), multiary, base)
-            counter = 0
-            for s in dictionary[sign]:
-                layers[counter].append(s)
-                counter += 1
+    base = get_number_of_layers(multiary)
 
     # MWT creation
+    root = Root()
+    dictionary = {}
+    for sign in input_string:
+        if sign not in dictionary:
+            dictionary[sign] = change_base(ord(sign), multiary, base)
+        root.put_signs_in_tree(dictionary[sign])
+    import pdb; pdb.set_trace()
+
+    
+
+
+
+
+
 

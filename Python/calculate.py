@@ -11,6 +11,13 @@ def create_layers(num_of_layers):
         layers.append([]) #or layers.append(list())
     return layers
 
+# create empty lists that represents nodes where are values stored
+def create_node_layers(num_of_layers):
+    node_layers = []
+    for i in range(num_of_layers - 1):
+        node_layers.append([])
+    
+
 # function for changing base of a number
 # function is also padding a list (fills list with 0s)
 def change_base(number, base, num_of_levels):
