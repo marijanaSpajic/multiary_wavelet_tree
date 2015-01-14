@@ -77,12 +77,14 @@ while i<base do
 
 i=0
 while i<base-1 do
-	layers[i+1] << layers[i]
-	layers[i+1] << layers[i]
-	layers[i+1] << layers[i]
-	layers[i+1] << layers[i]
+	j=0
+	while j<base do
+		layers[i+1] << layers[i]
+		j+=1
+		end
 	i+=1
 	end
+
 
 
 
