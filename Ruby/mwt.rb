@@ -1,5 +1,7 @@
 include Math
 
+# currently, the script works only for trees up to and including base 4
+
 #arity = ARGV[0]
 #filepath = ARGV[1]
 arity = "4"
@@ -65,6 +67,68 @@ def findRank(position, symbol, i, layers)
 		position = findRank(position, symbol, i, layers)
 	else
 		return position
+		end
+
+end
+
+
+
+def doSelect(rank, symbol, i, layers)
+
+	if i == 3
+		j=0
+		count =0
+		while count<=rank do
+			if layers[3][symbol[0].to_i][symbol[1].to_i][symbol[2].to_i][j] == symbol[i]
+				count+=1
+				index = j
+				end
+			j+=1
+			end
+		end
+
+	if i == 2
+		j=0
+		count =0
+		while count<=rank do
+			if layers[2][symbol[0].to_i][symbol[1].to_i][j] == symbol[i]
+				count+=1
+				index = j
+				end
+			j+=1
+			end
+		end
+
+	if i == 1
+		j=0
+		count =0
+		while count<=rank do
+			if layers[1][symbol[0].to_i][j] == symbol[i]
+				count+=1
+				index = j
+				end
+			j+=1
+			end
+		end
+
+	if i == 0
+		j=0
+		count =0
+		while count<=rank do
+			if layers[0][j] == symbol[i]
+				count+=1
+				index = j
+				end
+			j+=1
+			end
+		end
+
+	i-=1
+
+	if i==-1
+		return index
+	else
+		index = doSelect(index+1, symbol, i, layers)
 		end
 
 end
@@ -198,8 +262,6 @@ while inp[0] != "exit" do
 
 		res = findRank(position, symbol_transformed, 0, layers)
 
-		
-
 		print res
 		print "\n"
 
@@ -211,6 +273,12 @@ while inp[0] != "exit" do
 		symbol_transformed = transformation[symbol]
 	
 		# do select
+
+		res = doSelect(rank, symbol_transformed, 3, layers)
+
+		print res
+		print "\n"
+
 		end
 	
 	end
