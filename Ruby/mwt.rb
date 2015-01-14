@@ -60,32 +60,76 @@ while i<sequence.length do
 	end
 
 
+
+# test data
+
+#sequence_transformed = ["312", "003", "030", "111", "233", "003", "101", "312", "112", "303"]
+#sequence_transformed = ["1003", "1013", "1110", "1001", "1013"]
+
+#sequence_transformed = sequence_transformed[0:4]
+
+
+
+
+
 # building layers
 # base = number of layers
 # layer array = [ [layer lvl_n], [layers lvl_n-1], layers lvl_n-2, ... , layers lvl_1 ]
 
+#layers = []
+#
+#i = 0
+#while i<=base do
+#	layers << []
+#	i+=1
+#	end
+#
+#i=0
+#while i<base do
+#	j=0
+#	while j<=base do
+#		layers[i+1] << layers[i]
+#		j+=1
+#		end
+#	i+=1
+#	end
+
+
+# this bit is pretty nasty and one should strive to do better
+# problem: ruby uses pointers instead of making copies of arrays in the loop above
 
 
 
-layers = []
 
-i = 0
-while i<base do
-	layers << []
-	i+=1
+
+if base == 3
+	layers = [[],[[],[],[],[]],[[[],[],[],[]],[[],[],[],[]],[[],[],[],[]],[[],[],[],[]]]]
+	end
+if base == 4
+	layers = [[], [[], [], [], []], [[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]], [[[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]], [[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]], [[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]], [[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]]]]
 	end
 
-i=0
-while i<base-1 do
-	j=0
-	while j<base do
-		layers[i+1] << layers[i]
-		j+=1
+# this bit only really works up to base 4
+
+for item in sequence_transformed do
+	layers[0] << item[0]
+	if base >=2
+		layers[1][item[0].to_i] << item[1]
 		end
-	i+=1
+	if base >=3
+		layers[2][item[0].to_i][item[1].to_i] << item[2]
+		end
+	if base >=4
+		layers[3][item[0].to_i][item[1].to_i][item[2].to_i] << item[3]
+		end
 	end
 
 
+for layer in layers
+	print "\n"
+	print layer
+	print "\n"
+	end
 
 
 
