@@ -39,6 +39,50 @@ int calcRank(Node* root, int position, int *codeValue, int treeLayers){
     return rank;
 }
 
+int calcSelectLayer(Node* node, int numOfChar, int digit){
+
+    int select = 0;
+    int i;
+    //if requested number of character is bigger than number of characters in node
+    if(numOfChar > (*node).numOfValues){
+        return -1;
+    }
+    for(i = 0; i < (*node).numOfValues; i++){
+        if((*node).data[i] == digit){
+            select++;
+            if(select == numOfChar){
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+//call select for each layer
+int calcSelect(Node* root, int numOfChar, int *codeValue, int treeLayers){
+
+    int i;
+    int select;
+    Node * node = root;
+
+    //find leaf
+    for(i = 1; i < treeLayers; i++){
+        int digit = codeValue[i-1];
+        node = (*node).child[digit];
+    }
+
+    //call select for each layer
+    for (i = treeLayers; i > 0; i--){
+        select = calcSelectLayer(&node[0], numOfChar, codeValue[i-1]);
+        if(select == -1){
+            break;
+        }
+        numOfChar = select + 1;
+        node = (*node).parent;
+    }
+    return select;
+}
+
 //create node
 Node * createTree(char *inputStream, int fileLength, int **alphabet, int arity, int numOfDigits){
 
@@ -79,7 +123,6 @@ Node * createTree(char *inputStream, int fileLength, int **alphabet, int arity, 
                     (*node).data[0] = digit;
                     (*node).numOfValues = 1;
                     (*node).child = (Node **)malloc(arity*sizeof(Node*));
-                    (*node).parent = (Node *)malloc(sizeof(Node));
                     int k;
                     for(k = 0; k < arity; k++){
                         Node* children = (Node *)malloc(sizeof(Node));
@@ -139,7 +182,6 @@ int main (int argc, char *argv[]){
     int *alphabet[128] = {NULL};
     int arity = atoi(argv[2]);
     int treeLayers = ceil(7/log2(arity));
-    //printf("Number of layers: %d \n", treeLayers);
 
     //open file and get file length
     FILE *file;
@@ -214,8 +256,15 @@ int main (int argc, char *argv[]){
                     printf("There is no such character in alphabet.\n\n");
                 }
                 else {
-                    //select
-                    //printf("%d. character %c is on position: %d", position, charOfAlphabet, select);
+                    int *codeValue = alphabet[charOfAlphabet];
+                    select = calcSelect(&root[0], position, &codeValue[0], treeLayers);
+                    if(select == -1){
+                        printf("There are not that many characters in the tree.\n\n");
+                    }
+                    else{
+                        printf("%d. character %c is on position: %d", position, charOfAlphabet, select);
+                        printf("\n\n");
+                    }
                 }
             }
             else {
