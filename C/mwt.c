@@ -196,7 +196,6 @@ int main (int argc, char *argv[]){
 
     //save data from file to array
     char inputStream[fileLength];
-    printf("length: %d \n", fileLength);
     int i = 0;
     int character;
     while((character = fgetc(file)) != EOF){
