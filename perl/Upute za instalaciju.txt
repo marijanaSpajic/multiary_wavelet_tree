@@ -12,6 +12,10 @@ Ono što je potrebno:
 	-cijeli broj, za rank je to pozicija, a za select je to rank
 	-"A", "C", "G" ili "T", znakovi nad kojima se vrši funkcija
 
+Za pokretanje testnog primjera (nalazi se već u direktoriju \perl):
+perl mwt.pl test 5 rank 10 A
+Rezultat izvođenja je: 2	
+	
 Primjer pokretanja iz komandne linije:
 
 perl mwt.pl input_2 5 rank 10 C
