@@ -11,9 +11,6 @@ function = ARGV[2]
 arg1 = ARGV[3]
 arg2 = ARGV[4]
 
-#arity = "5"
-#filepath = "generate_inputs/inputs/input_3"
-
 arity = arity.to_i
 base = log(arity,2)
 base = 7/base
@@ -21,6 +18,7 @@ base = base.ceil
 base = base.to_i
 
 
+# implementation of rank function
 def findRank(position, symbol, i, layers)
 	count = 0
 
@@ -79,7 +77,7 @@ def findRank(position, symbol, i, layers)
 end
 
 
-
+#implementation of select function
 def doSelect(rank, symbol, i, layers)
 
 	if i == 3
@@ -173,7 +171,7 @@ for character in alphabet_ascii do
 	end
 
 
-# translation dictionary from original alphabet to base_n
+# create translation dictionary from original alphabet to base_n
 
 transformation = { alphabet[0] => alphabet_basen[0], alphabet[1] => alphabet_basen[1], alphabet[2] => alphabet_basen[2], alphabet[3] => alphabet_basen[3] }
 
@@ -190,13 +188,6 @@ while i<sequence.length do
 	end
 
 
-
-# test data
-
-#sequence_transformed = ["312", "003", "030", "111", "233", "003", "101", "312", "112", "303"]
-#sequence_transformed = ["1003", "1013", "1110", "1001", "1013"]
-
-#sequence_transformed = sequence_transformed[0:4]
 
 
 
@@ -225,8 +216,9 @@ while i<sequence.length do
 #	end
 
 
-# this bit is pretty nasty and one should strive to do better
+# the following section is pretty nasty and one should strive to do better
 # problem: ruby uses pointers instead of making copies of arrays in the loop above
+# therefore the tree and mwt functions are hardcoded for up to arity 5 (base 4)
 
 if base == 3
 	layers = [[],[[],[],[],[]],[[[],[],[],[]],[[],[],[],[]],[[],[],[],[]],[[],[],[],[]]]]
@@ -235,7 +227,8 @@ if base == 4
 	layers = [[], [[], [], [], []], [[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]], [[[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]], [[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]], [[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]], [[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]]]]
 	end
 
-# this bit only really works up to base 4
+
+# arrange data in tree
 
 for item in sequence_transformed do
 	layers[0] << item[0]
@@ -267,7 +260,6 @@ if inp[0] == "rank"
 	symbol_transformed = transformation[symbol]
 
 		# do rank
-		# 4-level tree
 
 	res = findRank(position, symbol_transformed, 0, layers)
 
