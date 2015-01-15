@@ -36,14 +36,14 @@ if __name__ == "__main__":
 
     # get info from input
     while True:
-        command = input("> ")
+        command = raw_input("> ")
         while command[0] != "r" and command[0] != "s" and command[0] != "e":
             print("That command does not exist!\n")
             print ("Possible commands:\n")
             print ("1) rank   -> r(position,symbol)\n")
             print ("2) select -> s(rank,symbol)\n")
             print ("3) exit   -> e\n")
-            command = input("> ")
+            command = raw_input("> ")
         if command[0] == "e":
             sys.exit()
         index = command.index(",")
