@@ -6,31 +6,33 @@ typedef struct Node Node;
 
 struct Node {
     int *data;
-    Node *child;
-    Node *next;
+    Node **child;
+    Node *parent;
     int numOfValues;
 };
 
 //create node
-Node * createTree(char *inputStream, int fileLength, int *alphabet, int arity, int numOfDigits){
+Node * createTree(char *inputStream, int fileLength, int **alphabet, int arity, int numOfDigits){
 
     Node* root = (Node *) malloc(sizeof(Node));
     (*root).data = (int *)malloc(fileLength*sizeof(int));
-    (*root).child = (Node *)malloc(arity*sizeof(Node*));
-    (*root).next = NULL;
+    (*root).data[0] = -1;
+    (*root).child = (Node **)malloc(arity*sizeof(Node*));
+    (*root).parent = NULL;
     (*root).numOfValues = 0;
     int i;
     for(i = 0; i < arity; i++){
         Node* child = (Node *)malloc(sizeof(Node));
         (*child).data = (int *)malloc(sizeof(int));
         (*child).data[0] = -1;
-        (*root).child[i*sizeof(Node)] = *child;
+        (*child).parent = root;
+        (*root).child[i] = child;
     }
 
     //for each character in input stream
     for (i = 0; i < fileLength; i++){
         int c = inputStream[i];
-        int *codeValue = &alphabet[c];
+        int *codeValue = alphabet[c];
 
         //save each digit to appropriate node
         int j;
@@ -39,42 +41,37 @@ Node * createTree(char *inputStream, int fileLength, int *alphabet, int arity, i
             int digit = codeValue[j];
             //put first digit in root
             if(j==0){
-                (*root).data[(*root).numOfValues] = digit;
-                (*root).numOfValues++;
+                (*root).data[i] = digit;
+                (*root).numOfValues = (*root).numOfValues + 1;
             }
             else {
+                  Node* node = (*temp).child[codeValue[j-1]];
                     //create child if doesn't exist
-                if((*temp).child[codeValue[j-1]*sizeof(Node)].data[0] == -1){
-                    (*temp).child[codeValue[j-1]*sizeof(Node)].data[0] = digit;
-                    (*temp).child[codeValue[j-1]*sizeof(Node)].numOfValues = 1;
-                    (*temp).child[codeValue[j-1]*sizeof(Node)].child = (Node *)malloc(arity*sizeof(Node*));
-                    (*temp).child[codeValue[j-1]*sizeof(Node)].next = (Node *)malloc(sizeof(Node));
+                if((*node).data[0] == -1){
+                    (*node).data[0] = digit;
+                    (*node).numOfValues = 1;
+                    (*node).child = (Node **)malloc(arity*sizeof(Node*));
+                    (*node).parent = (Node *)malloc(sizeof(Node));
                     int k;
                     for(k = 0; k < arity; k++){
                         Node* children = (Node *)malloc(sizeof(Node));
                         (*children).data = (int *)malloc(sizeof(int));
                         (*children).data[0] = -1;
-                        (*temp).child[codeValue[j-1]*sizeof(Node)].child[k*sizeof(Node)] = *children;
+                        (*children).parent = node;
+                        (*node).child[k] = children;
                     }
-                    if(digit < (arity-1)) {
-                        int valueOfNext = codeValue[j-1] + 1;
-                        (*temp).child[codeValue[j-1]*sizeof(Node)].next = &(*temp).child[valueOfNext*sizeof(Node)];
-                    }
-                    else {
-                        (*temp).child[codeValue[j-1]*sizeof(Node)].next = NULL;
-                    }
-                    temp = &(*temp).child[codeValue[j-1]*sizeof(Node)];
+                    temp = node;
                 }
                 //child already exists
                 else {
-                    int size = (*temp).child[codeValue[j-1]*sizeof(Node)].numOfValues + 1;
-                    (*temp).child[codeValue[j-1]*sizeof(Node)].data = (int *) realloc((*temp).child[codeValue[j-1]*sizeof(Node)].data, size*sizeof(int));
-                    (*temp).child[codeValue[j-1]*sizeof(Node)].data[size-1] = digit;
-                    (*temp).child[codeValue[j-1]*sizeof(Node)].numOfValues++;
-                    temp = &(*temp).child[codeValue[j-1]*sizeof(Node)];
+                    int size = (*node).numOfValues + 1;
+                    (*node).data = (int *) realloc((*temp).child[codeValue[j-1]]->data, size*sizeof(int));
+                    (*node).data[size-1] = digit;
+                    (*node).numOfValues = (*node).numOfValues + 1;
+                    temp = node;
                 }
             }
-        }
+            }
     }
     return root;
 }
@@ -111,10 +108,10 @@ int main (int argc, char *argv[]){
         exit(1);
     }
 
-    int * alphabet[128] = {NULL};
+    int *alphabet[128] = {NULL};
     int arity = atoi(argv[2]);
     int treeLayers = ceil(7/log2(arity));
-    printf("Number of layers: %d \n", treeLayers);
+    //printf("Number of layers: %d \n", treeLayers);
 
     //open file and get file length
     FILE *file;
@@ -141,30 +138,7 @@ int main (int argc, char *argv[]){
             }
     fclose(file);
 
-    //test code values of alphabet
-    int j;
-    int k = 0;
-    for (j = 0; j < 128; j++){
-        if(alphabet[j] != NULL){
-            for(k = 0; k < treeLayers; k++){
-                printf("%d", alphabet[j][k]);
-            }
-        printf("\n");
-        }
-    }
+    Node * root = createTree(&inputStream[0], fileLength, &alphabet[0], arity, treeLayers);
 
-    Node * root = createTree(&inputStream[0], fileLength, &alphabet[0][0], arity, treeLayers);
-    for(j = 0; j < fileLength; j++){
-        printf("Podaci u root: %d", (*root).data[j]);
-    }
-
-    //create and fill tree layers
-    //int layers[treeLayers][fileLength];
-    //for(j = 0; j < fileLength; j++){
-      //  int c = inputStream[j];
-       // for(k = 0; k < treeLayers; k++){
-         //   layers[k][j] = alphabet[c][k];
-        //}
-    //}
 return 0;
 }
