@@ -1,6 +1,10 @@
 #include <iostream>
+#include <cstdlib>
+#include <stdlib.h>
+#include <cstring>
 #include <vector>
 #include <assert.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -35,17 +39,17 @@ vector<int> WordCoder(int quotient, int ary, int number_of_digits){
 	  digits++;
 	}
 
-	reverse(code_word.begin(), code_word.end());
+	std::reverse(code_word.begin(), code_word.end());
 	return code_word;
 }
  
 // Translates numbered alphabet into coded words (depending on arity)
 // Input: numbered alphabet, arity, number of layers = number of digits
 // Output: Vector of coded alphabet symbols
-vector<vector<int>> GenerateCodeAlphabet(vector<int> numbered_alphabet, int ary, int number_of_digits) {
+vector<vector<int> > GenerateCodeAlphabet(vector<int> numbered_alphabet, int ary, int number_of_digits) {
   int iter, quotient, remainder = 0;
   vector<int> code_word;
-  vector<vector<int>> coded_words;
+  vector<vector<int> > coded_words;
   
   // Iterate over numbered alphabet (ASCII)
   for(iter = 0; iter < numbered_alphabet.size(); iter++){
@@ -89,7 +93,7 @@ node* InitRoot(int ary){
 
 // Recursive; generates a single MW tree branch (down to the root)
 // Input: root node, layered symbol sequences, top layer, arity, index in sequence
-void CreateBranch(node *parent, vector<vector<int>> layers, int layer, int ary, int index){
+void CreateBranch(node *parent, vector<vector<int> > layers, int layer, int ary, int index){
   node *current;
 
   // Return if at bottom layer
@@ -142,13 +146,17 @@ int Rank(int position, vector<int> symbol, node *search){
   
 }
 
+// Select function
+// Input: rank of required symbol, coded alphabet symbol, MWT root node, top layer
 int Select(int rank, vector<int> symbol, node *search, int layer){
   int iter, counter = 0, current = symbol[0], size = search->data.size();
   vector<int> next;
 
+  // Remove current symbol from vector
   for (int iter = 1; iter < symbol.size(); iter++)
 	next.push_back(symbol[iter]);
 
+  // If at leaf
   if(layer == 0){
 	
 	for (iter = 0; iter < size; iter++){
@@ -158,6 +166,7 @@ int Select(int rank, vector<int> symbol, node *search, int layer){
 		return iter+1;
 	}
   }
+  // If on an intermediary node
   else if(layer > 0 && layer < symbol.size()){
 
 	rank = Select(rank, next, search->next[current], layer-1);
@@ -168,6 +177,8 @@ int Select(int rank, vector<int> symbol, node *search, int layer){
 		return iter+1;
 	}
   }
+
+  // If at root
   else if (layer == symbol.size()){
 	
 	rank = Select(rank, next, search->next[current], layer-1);

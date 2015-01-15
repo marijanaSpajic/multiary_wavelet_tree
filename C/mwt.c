@@ -11,6 +11,34 @@ struct Node {
     int numOfValues;
 };
 
+//calculate rank in one layer
+int calcRankLayer(Node* node, int position, int digit){
+
+    int rankLayer = 0;
+    int i;
+    for(i = 0; i < position; i++){
+        if((*node).data[i] == digit){
+            rankLayer++;
+        }
+    }
+    return rankLayer;
+}
+
+//call rankLayer for each layer
+int calcRank(Node* root, int position, int *codeValue, int treeLayers){
+
+    int rank = 0;
+    Node * node = root;
+    int i;
+    for(i = 0; i < treeLayers; i++){
+        int digit = codeValue[i];
+        rank = calcRankLayer(&node[0], position, digit);
+        position = rank;
+        node = (*node).child[digit];
+    }
+    return rank;
+}
+
 //create node
 Node * createTree(char *inputStream, int fileLength, int **alphabet, int arity, int numOfDigits){
 
@@ -139,6 +167,65 @@ int main (int argc, char *argv[]){
     fclose(file);
 
     Node * root = createTree(&inputStream[0], fileLength, &alphabet[0], arity, treeLayers);
+
+    printf("Creating tree finished.\n");
+    int a = 1;
+    while (a) {
+        char command;
+        int position;
+        char charOfAlphabet;
+        int rank, select;
+        printf("Continue (c) or exit (e)? \n");
+        scanf(" %c", &command);
+        if (command=='e'){
+            a = 0;
+            break;
+        }
+        else if(command=='c'){
+            printf("\nType your command.\n\n");
+            printf("Characters in the tree:\n");
+            for(i = 0; i < 128; i++){
+                if(alphabet[i] != NULL){
+                    printf("%c ", i);
+                }
+            }
+            printf("\n\n");
+            printf("Possible commands: \n \n");
+            printf("1) RANK - r 'position' 'character' \t \t MAX_POSITION = %d", fileLength);
+            printf("\n \n");
+            printf("2) SELECT - s 'num_of_character' 'character' \n \n");
+            scanf(" %c %d %c", &command, &position, &charOfAlphabet);
+            if(command=='r'){
+                if(position > fileLength || position < 0){
+                    printf("Wrong value of rank.\n\n");
+                }
+                else if(alphabet[charOfAlphabet] == NULL){
+                    printf("There is no such character in alphabet.\n\n");
+                }
+                else {
+                    int *codeValue = alphabet[charOfAlphabet];
+                    rank = calcRank(&root[0], position, &codeValue[0], treeLayers);
+                    printf("Calculated rank: %d", rank);
+                    printf("\n\n");
+                }
+            }
+            else if(command=='s'){
+                if(alphabet[charOfAlphabet] == NULL){
+                    printf("There is no such character in alphabet.\n\n");
+                }
+                else {
+                    //select
+                    //printf("%d. character %c is on position: %d", position, charOfAlphabet, select);
+                }
+            }
+            else {
+                printf("Wrong command.\n\n");
+            }
+        }
+        else {
+            printf("Wrong command. Type 'c' for continue or 'e' for exit.\n\n");
+        }
+    }
 
 return 0;
 }

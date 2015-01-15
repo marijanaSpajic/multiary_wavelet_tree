@@ -1,6 +1,0 @@
-arity = ARGV[0]
-datafile = ARGV[1]
-
-print "Input arguments:\n"
-print arity
-print datafile
