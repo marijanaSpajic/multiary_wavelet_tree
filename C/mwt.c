@@ -11,6 +11,34 @@ struct Node {
     int numOfValues;
 };
 
+//calculate rank in one layer
+int calcRankLayer(Node* node, int position, int digit){
+
+    int rankLayer = 0;
+    int i;
+    for(i = 0; i < position; i++){
+        if((*node).data[i] == digit){
+            rankLayer++;
+        }
+    }
+    return rankLayer;
+}
+
+//call rankLayer for each layer
+int calcRank(Node* root, int position, int *codeValue, int treeLayers){
+
+    int rank = 0;
+    Node * node = root;
+    int i;
+    for(i = 0; i < treeLayers; i++){
+        int digit = codeValue[i];
+        rank = calcRankLayer(&node[0], position, digit);
+        position = rank;
+        node = (*node).child[digit];
+    }
+    return rank;
+}
+
 //create node
 Node * createTree(char *inputStream, int fileLength, int **alphabet, int arity, int numOfDigits){
 
@@ -156,9 +184,9 @@ int main (int argc, char *argv[]){
         else if(command=='c'){
             printf("\nType your command.\n\n");
             printf("Characters in the tree:\n");
-            for(j = 0; j < 128; j++){
-                if(alphabet[j] != NULL){
-                    printf("%c ", j);
+            for(i = 0; i < 128; i++){
+                if(alphabet[i] != NULL){
+                    printf("%c ", i);
                 }
             }
             printf("\n\n");
@@ -176,8 +204,9 @@ int main (int argc, char *argv[]){
                 }
                 else {
                     int *codeValue = alphabet[charOfAlphabet];
-                    //rank
-					//printf("Calculated rank: %d", rank);
+                    rank = calcRank(&root[0], position, &codeValue[0], treeLayers);
+                    printf("Calculated rank: %d", rank);
+                    printf("\n\n");
                 }
             }
             else if(command=='s'){
@@ -190,7 +219,7 @@ int main (int argc, char *argv[]){
                 }
             }
             else {
-                printf("Wrong command.\n");
+                printf("Wrong command.\n\n");
             }
         }
         else {
