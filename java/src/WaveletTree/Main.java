@@ -9,10 +9,7 @@ import java.util.HashMap;
 public class Main {
 
 	public static void main(String[] args) throws IOException{
-		String queue;
 		int number;
-		
-		
 		
 		BufferedReader queueInput = new BufferedReader(new FileReader("/home/marijana/Desktop/input_3"));
 		

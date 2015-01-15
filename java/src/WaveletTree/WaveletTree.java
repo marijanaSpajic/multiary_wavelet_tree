@@ -10,38 +10,34 @@ public class WaveletTree {
 	
 	public static void WaveletTrees(String queue, int number) throws IOException{
 		
-		int i, j, k;
-		String temp;
+		int i, j;
+		String temp = "";
 		String asciiQueue = "";
 		String intoBase[]= new String[number*queue.length()];
 		String level[] = new String[queue.length()];
-		String newlevel[] = new String[queue.length()];
-		ArrayList listOfLevels = new ArrayList();
 		queue = queue.replace("\r\n", "").replace("\n", "");
 		int numberOfLevels;
 		
+		//conver into acsii
 		for(i = 0; i < queue.length(); i++) {
 			intoBase[i] = Integer.toString((int)queue.charAt(i), number);
 			asciiQueue += intoBase[i];
 		}
 		
-		System.out.println(asciiQueue);
-		
+		//number of levels
 		numberOfLevels = (int)(7/(Math.log(number)/Math.log(2)));
-		System.out.println(numberOfLevels);
 		
-		for(j = 0, k = 0; j <= numberOfLevels; j++, k++) {
-			temp = "";
-			while(k < queue.length()*number) {
-				 temp += Character.toString(asciiQueue.charAt(k));
-				 level[j] = temp;
-				k += number;
-			}
-			k -= queue.length()*number;
-			listOfLevels.add(j, level[j]);
-			System.out.println("level" + j + ":" + level[j]);
-			Algorithm(queue, level[0], number);
+		//root node
+		int k = 0;
+		while(k < queue.length()*number) {
+			 temp += Character.toString(asciiQueue.charAt(k));
+			 level[0] = temp;
+			k += number;
 		}
+		
+		System.out.println("level0: " + level[0]);
+		Node node = Algorithm(queue, level[0], number);
+		System.out.println(node);
 		
 		
 		String queueFunction;
@@ -65,7 +61,7 @@ public class WaveletTree {
 			BufferedReader inputChar = new BufferedReader(new InputStreamReader(System.in));
 			System.out.print("Enter character");
 			paramChar = inputChar.readLine();
-			System.out.println(listOfLevels);
+			//System.out.println(listOfLevels);
 			
 			Rank.RankFunction(paramNumber, Integer.toString((int)paramChar.charAt(0), number), queue, number);	
 		}
@@ -75,42 +71,72 @@ public class WaveletTree {
 		}
 	}
 	
-	public static void Algorithm(String niz, String root, int number) {
-		HashMap<Integer, Node> map = new HashMap<Integer, Node>();
-		int i, j, k;
-		String letter = "";
-		
-		String asciiQueue = "";
-		String intoBase[]= new String[number*niz.length()];
+	public static Node Algorithm(String queue, String root, int number) {
+		String intoBase[]= new String[number*queue.length()];
 		int z,v;
-		String level0 = ""; 
-		Node node;
 		Node rootNode = new Node(null, root , 0);
-		Node temporaryNode = rootNode;
-		for(z = 0; z < niz.length(); z++) {
-			intoBase[z] = Integer.toString((int)niz.charAt(z), number);
-			asciiQueue += intoBase[z];
-			System.out.println(intoBase[z]);
+		
+		Node nodeLevel1;
+		Node nodeLeveln;
+		
+		for(int i = 0; i < number; i++) {
+			Node child = new Node(null, null, -1);
+			rootNode.addChild(child, i);
+		}
+		
+		for(z = 0; z < queue.length(); z++) {
+			intoBase[z] = Integer.toString((int)queue.charAt(z), number);
+			Node temporaryNode = rootNode;
 			for(v = 1; v < number; v++) {
 				if(v == 1) {
-					node = new Node(rootNode.parent, Character.toString(intoBase[z].charAt(v)), Integer.parseInt(Character.toString(intoBase[z].charAt(0))));
-					temporaryNode = node;
+					//create child if doesn't exist
+					if(rootNode.children.get(v).index == -1) {
+						nodeLevel1 = new Node(rootNode.value, Character.toString(intoBase[z].charAt(v)), Integer.parseInt(Character.toString(intoBase[z].charAt(0))));
+						
+						//create childNode
+						for(int i = 0; i < number; i++) {
+							Node children = new Node(nodeLevel1.parent, null, -1);
+							rootNode.addChild(children, i);
+							nodeLevel1.addChild(children, i);
+						}
+						rootNode.addChild(nodeLevel1, v);
+						temporaryNode = nodeLevel1;
+					}
+					
+					//child already exist
+					else {
+						rootNode.children.get(v).value += Character.toString(intoBase[z].charAt(v));
+						temporaryNode = rootNode.children.get(v);
+					}
+					
 				}
 				else {
-					node = new Node(temporaryNode.parent, Character.toString(intoBase[z].charAt(v)), Integer.parseInt(Character.toString(intoBase[z].charAt(0))));
+					//create child if doesn't exist
+					if(temporaryNode.children.get(v).index == -1) {
+						nodeLeveln = new Node(temporaryNode.value, Character.toString(intoBase[z].charAt(v)), temporaryNode.index);
+						//create childNode
+						for(int i = 0; i < number; i++) {
+							Node children = new Node(nodeLeveln.parent, null, -1);
+							nodeLeveln.addChild(children, i);
+						}
+						temporaryNode.addChild(nodeLeveln, v);
+						temporaryNode = nodeLeveln;
+					}
+					//child already exist
+					else {
+						temporaryNode.children.get(v).value += Character.toString(intoBase[z].charAt(v));
+						temporaryNode = temporaryNode.children.get(v);
+					}
 				}
-					
-			}	
+			}
+		}
+		return rootNode;
 	}
-}
 
 	public static String ReturnLevel(String queue, int number, int m) {
-		int i, j, k;
-		String temp = "";
+		int i;
 		String asciiQueue = "";
 		String intoBase[]= new String[number*queue.length()];
-		String level[] = new String[queue.length()];
-		int numberOfLevels;
 		String listOfLevels = "";
 		
 		for(i = 0; i < queue.length(); i++) {
