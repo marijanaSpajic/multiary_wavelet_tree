@@ -15,8 +15,10 @@ int main(int argc, char* argv[]){
 	exit(1);
   }
 
+  // Get arity from user
   int ary = atoi(argv[2]);
   
+  // Read input file
   FILE *file;
   file = fopen(argv[1], "r");
   
@@ -24,6 +26,7 @@ int main(int argc, char* argv[]){
   int length = ftell(file);
   fseek(file, 0, SEEK_SET);
 
+  // Read file into local array
   char *input;
   input = new char[length+5];
 
@@ -35,19 +38,16 @@ int main(int argc, char* argv[]){
 
   fclose(file);
 
+  // Declarations
   const char *newLetter;
-
   vector<int> numbered_alphabet,
 	code_word,
 	layer;
-  
   vector<vector<int>> code_words, 
 	layers, 
 	coded_input;
-
   char letter,
 	   alphabet[4] = {};
-  
   int iter1, 
 	  iter2 = 0,
 	  layer_number;
@@ -66,6 +66,7 @@ int main(int argc, char* argv[]){
 	 
   }
 
+  // Turn letters to ASCII and code them
   layer_number = ceil((7/(log((double)ary)/log(double(2)))));
   numbered_alphabet = NumberedAlphabet(alphabet);
   code_words = GenerateCodeAlphabet(numbered_alphabet, ary, layer_number);
@@ -101,64 +102,16 @@ int main(int argc, char* argv[]){
     CreateBranch(root, layers, layer_number-1, ary, iter1);
   }
 
-  for(iter1 = 0; iter1 < code_words.size(); iter1++)
-	code_word = code_words[iter1];
 
-
-  code_word = WordCoder((int)'A', ary, layer_number);
-
-  int rank = Rank(5, code_word, root);
+  // Rank
+  code_word = WordCoder((int)'T', ary, layer_number);
+  int rank = Rank(7, code_word, root);
   cout << rank << endl;
 
-  /* Various tests
-
-  for (iter1 = layer_number - 1 ; iter1 >=0; iter1--){
-	for (iter2 = 0; iter2 < layers[iter1].size(); iter2++)
-		cout << layers[iter1][iter2];
-	cout << endl;
-  }
-
-  for (iter2 = 0; iter2 < root.data.size(); iter2++)
-    cout << root.data[iter2];
-
-  for (iter1 = 0; iter1 < layer_number; iter1++){
-	for (iter2 = 0; iter2 < layers[iter1].size(); iter2++)
-		cout << layers[iter1][iter2];
-	cout << endl;
-  }
+  code_word = WordCoder((int)'A', ary, layer_number);
   
-  for (iter1 = 0; iter1 < coded_input.size(); iter1++){
-	  for (iter2 = 0; iter2 < coded_input[iter1].size(); iter2++)
-		  cout << coded_input[iter1].at(iter2);
-	  cout << endl;
-
-  for (iter2 = 0; iter2 < root.data.size(); iter2++)
-		cout << root.data[iter2];
-	cout << endl;
-  for (iter1 = 0; iter1 < coded_input.size(); iter1++){
-	  for (iter2 = 0; iter2 < coded_input[iter1].size(); iter2++)
-		  cout << coded_input[iter1].at(iter2);
-	  cout << endl;
-	}
-
-	cout << layer_number;
-
- for (iter1 = 0; iter1 < sizeof(alphabet); iter1++)
-	  if (alphabet[iter1] != NULL)
-		cout << alphabet[iter1] << endl;
-
-  cout << endl;
-  for (iter1 = 0; iter1 < ary; iter1++)
-	  cout << numbered_alphabet[iter1] << endl;
-
-  for(iter1 = 0; iter1 < code_words.size(); iter1++){
-	code_word = code_words[iter1];
-
-	for(iter2 = 0; iter2 < code_word.size(); iter2++)
-	  cout << code_word[iter2];
-	cout << endl;
-  }
-  */
+  int select = Select(2, code_word, root, layer_number-1);
+  cout << select << endl;
 
   getchar();
   return 0;

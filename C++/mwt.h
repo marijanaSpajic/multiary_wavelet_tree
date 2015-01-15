@@ -146,3 +146,62 @@ int Rank(int position, vector<int> symbol, node *search){
   
 }
 
+int Select(int rank, vector<int> symbol, node *search, int layer){
+  int iter, counter = 0, current = symbol[0], size = search->data.size();
+  vector<int> next;
+
+  for (int iter = 1; iter < symbol.size(); iter++)
+	next.push_back(symbol[iter]);
+
+  if(layer == 0){
+	
+	for (iter = 0; iter < size; iter++){
+	  if(current == search->data[iter])
+		counter++;
+	  if(counter == rank)
+		return iter+1;
+	}
+  }
+  else if(layer > 0 && layer < symbol.size()){
+
+	rank = Select(rank, next, search->next[current], layer-1);
+	for (iter = 0; iter < size; iter++){
+	  if(current == search->data[iter])
+		counter++;
+	  if(counter == rank)
+		return iter+1;
+	}
+  }
+  else if (layer == symbol.size()){
+	
+	rank = Select(rank, next, search->next[current], layer-1);
+	for(iter = 0; iter < size; iter++){
+	  if(current == search->data[iter])
+		counter++;
+	  if(counter == rank)
+		return iter;
+	}
+  }
+
+}
+
+/*
+  if(layer == 0){
+    int current = symbol[0], counter = 0;
+	for(int iter = 0; iter < search->data.size(); iter++){
+	  if(current == search->data[iter])
+		  counter++;
+	  if(counter == rank)
+		  return iter+1;
+	}
+  }
+/*
+  if(layer > 0){
+    int num_of_children = search->next.size();
+    for (int iter = 0; iter < num_of_children; iter++)
+		return get_select(rank, symbol, search->next[iter], layer-1);
+  }
+  
+  */
+
+
