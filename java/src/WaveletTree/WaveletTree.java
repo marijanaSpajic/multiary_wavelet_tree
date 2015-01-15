@@ -37,7 +37,6 @@ public class WaveletTree {
 		
 		System.out.println("level0: " + level[0]);
 		Node node = Algorithm(queue, level[0], number);
-		System.out.println(node);
 		
 		
 		String queueFunction;
@@ -90,42 +89,45 @@ public class WaveletTree {
 			for(v = 1; v < number; v++) {
 				if(v == 1) {
 					//create child if doesn't exist
-					if(rootNode.children.get(v).index == -1) {
+					if(rootNode.children.get(Integer.parseInt(Character.toString(rootNode.value.charAt(z)))).index == -1) {
 						nodeLevel1 = new Node(rootNode.value, Character.toString(intoBase[z].charAt(v)), Integer.parseInt(Character.toString(intoBase[z].charAt(0))));
-						
 						//create childNode
 						for(int i = 0; i < number; i++) {
-							Node children = new Node(nodeLevel1.parent, null, -1);
+							Node children = new Node(nodeLevel1.value, null, -1);
 							rootNode.addChild(children, i);
 							nodeLevel1.addChild(children, i);
 						}
-						rootNode.addChild(nodeLevel1, v);
 						temporaryNode = nodeLevel1;
+						rootNode.addChild(nodeLevel1, Integer.parseInt(Character.toString(rootNode.value.charAt(z))));
+						
 					}
 					
 					//child already exist
 					else {
-						rootNode.children.get(v).value += Character.toString(intoBase[z].charAt(v));
-						temporaryNode = rootNode.children.get(v);
-					}
-					
+						temporaryNode = rootNode.children.get(Integer.parseInt(Character.toString(intoBase[z].charAt(0))));
+						rootNode.children.get(Integer.parseInt(Character.toString(rootNode.value.charAt(z)))).value += Character.toString(intoBase[z].charAt(v));
+						
+					}		
 				}
 				else {
 					//create child if doesn't exist
-					if(temporaryNode.children.get(v).index == -1) {
-						nodeLeveln = new Node(temporaryNode.value, Character.toString(intoBase[z].charAt(v)), temporaryNode.index);
+					if(temporaryNode.children.get(Integer.parseInt(temporaryNode.value)).index == -1) {
+						nodeLeveln = new Node(temporaryNode.value, Character.toString(intoBase[z].charAt(v)), Integer.parseInt(temporaryNode.value));
 						//create childNode
-						for(int i = 0; i < number; i++) {
-							Node children = new Node(nodeLeveln.parent, null, -1);
-							nodeLeveln.addChild(children, i);
+						if(v != number-1) {
+							for(int i = 0; i < number; i++) {
+								Node children = new Node(nodeLeveln.value, null, -1);
+								nodeLeveln.addChild(children, i);
+								temporaryNode.addChild(nodeLeveln, i);
+							}
 						}
-						temporaryNode.addChild(nodeLeveln, v);
+						temporaryNode.addChild(nodeLeveln, Integer.parseInt(temporaryNode.value));
 						temporaryNode = nodeLeveln;
 					}
 					//child already exist
 					else {
-						temporaryNode.children.get(v).value += Character.toString(intoBase[z].charAt(v));
-						temporaryNode = temporaryNode.children.get(v);
+						temporaryNode.children.get(Integer.parseInt(Character.toString(temporaryNode.value.charAt(temporaryNode.value.length())))).value += Character.toString(intoBase[z].charAt(v));
+						temporaryNode = temporaryNode.children.get(Integer.parseInt(Character.toString(temporaryNode.value.charAt(temporaryNode.value.length()))));
 					}
 				}
 			}

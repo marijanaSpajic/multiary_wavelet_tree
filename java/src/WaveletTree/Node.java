@@ -23,15 +23,4 @@ public class Node {
 		children.put(index, child);
 	}
 	
-	//ako ima djece u tom cvoru
-	public boolean hasChildrenNode(Node node, int index)  {
-		for(int i = 0; i < node.children.size(); i++) {
-			//if (node.children(i).index == index) {
-				
-		//	}
-		}
-			
-		return true;
-	}
-	
 }
