@@ -140,5 +140,63 @@ int main (int argc, char *argv[]){
 
     Node * root = createTree(&inputStream[0], fileLength, &alphabet[0], arity, treeLayers);
 
+    printf("Creating tree finished.\n");
+    int a = 1;
+    while (a) {
+        char command;
+        int position;
+        char charOfAlphabet;
+        int rank, select;
+        printf("Continue (c) or exit (e)? \n");
+        scanf(" %c", &command);
+        if (command=='e'){
+            a = 0;
+            break;
+        }
+        else if(command=='c'){
+            printf("\nType your command.\n\n");
+            printf("Characters in the tree:\n");
+            for(j = 0; j < 128; j++){
+                if(alphabet[j] != NULL){
+                    printf("%c ", j);
+                }
+            }
+            printf("\n\n");
+            printf("Possible commands: \n \n");
+            printf("1) RANK - r 'position' 'character' \t \t MAX_POSITION = %d", fileLength);
+            printf("\n \n");
+            printf("2) SELECT - s 'num_of_character' 'character' \n \n");
+            scanf(" %c %d %c", &command, &position, &charOfAlphabet);
+            if(command=='r'){
+                if(position > fileLength || position < 0){
+                    printf("Wrong value of rank.\n\n");
+                }
+                else if(alphabet[charOfAlphabet] == NULL){
+                    printf("There is no such character in alphabet.\n\n");
+                }
+                else {
+                    int *codeValue = alphabet[charOfAlphabet];
+                    //rank
+					//printf("Calculated rank: %d", rank);
+                }
+            }
+            else if(command=='s'){
+                if(alphabet[charOfAlphabet] == NULL){
+                    printf("There is no such character in alphabet.\n\n");
+                }
+                else {
+                    //select
+                    //printf("%d. character %c is on position: %d", position, charOfAlphabet, select);
+                }
+            }
+            else {
+                printf("Wrong command.\n");
+            }
+        }
+        else {
+            printf("Wrong command. Type 'c' for continue or 'e' for exit.\n\n");
+        }
+    }
+
 return 0;
 }
