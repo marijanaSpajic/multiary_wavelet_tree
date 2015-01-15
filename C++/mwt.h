@@ -146,13 +146,17 @@ int Rank(int position, vector<int> symbol, node *search){
   
 }
 
+// Select function
+// Input: rank of required symbol, coded alphabet symbol, MWT root node, top layer
 int Select(int rank, vector<int> symbol, node *search, int layer){
   int iter, counter = 0, current = symbol[0], size = search->data.size();
   vector<int> next;
 
+  // Remove current symbol from vector
   for (int iter = 1; iter < symbol.size(); iter++)
 	next.push_back(symbol[iter]);
 
+  // If at leaf
   if(layer == 0){
 	
 	for (iter = 0; iter < size; iter++){
@@ -162,6 +166,7 @@ int Select(int rank, vector<int> symbol, node *search, int layer){
 		return iter+1;
 	}
   }
+  // If on an intermediary node
   else if(layer > 0 && layer < symbol.size()){
 
 	rank = Select(rank, next, search->next[current], layer-1);
@@ -172,6 +177,8 @@ int Select(int rank, vector<int> symbol, node *search, int layer){
 		return iter+1;
 	}
   }
+
+  // If at root
   else if (layer == symbol.size()){
 	
 	rank = Select(rank, next, search->next[current], layer-1);
