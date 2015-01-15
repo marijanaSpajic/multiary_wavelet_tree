@@ -41,28 +41,9 @@ vector<vector<int>> GenerateCodeAlphabet(vector<int> numbered_alphabet, int ary,
   vector<int> code_word;
   vector<vector<int>> coded_words;
   
-  
   for(iter = 0; iter < numbered_alphabet.size(); iter++){
-/*	quotient = numbered_alphabet[iter];
 
-	int digits = 1;
-	while(0 != quotient){
-	  remainder = quotient%ary;
-	  code_word.push_back(remainder);
-	  digits++;
-	  quotient /= ary;
-	}
-	while(digits < (number_of_digits+1)){
-	  code_word.push_back(0);
-	  digits++;
-	}
-
-	reverse(code_word.begin(), code_word.end());
-
-
-	*/
 	code_word = WordCoder(numbered_alphabet[iter], ary, number_of_digits);
-
 	coded_words.push_back(code_word);	
 	code_word.clear();
   }
@@ -73,15 +54,14 @@ vector<vector<int>> GenerateCodeAlphabet(vector<int> numbered_alphabet, int ary,
 
 // Structure of a MW tree node
 typedef struct node {
-  node *previous;
+
   vector<int> data;
   vector<node*> next;  
 } node;
 
 // Initializes non-root node
-node* InitNode(node parent, int ary){
+node* InitNode(int ary){
   node *current = new node;
-  current->previous = &parent;
   for(int iter = 0; iter < ary; iter++){
 	current->next.push_back(NULL);
   }
@@ -108,7 +88,7 @@ void CreateBranch(node *parent, vector<vector<int>> layers, int layer, int ary, 
   // Create child if it does not exist
   else if (NULL == parent->next[layers[layer][index]]){
 
-    current = InitNode(*parent, ary);
+    current = InitNode(ary);
 	current->data.push_back(layers[layer-1][index]);
 	parent->next[layers[layer][index]] = current;
 	
@@ -184,24 +164,3 @@ int Select(int rank, vector<int> symbol, node *search, int layer){
   }
 
 }
-
-/*
-  if(layer == 0){
-    int current = symbol[0], counter = 0;
-	for(int iter = 0; iter < search->data.size(); iter++){
-	  if(current == search->data[iter])
-		  counter++;
-	  if(counter == rank)
-		  return iter+1;
-	}
-  }
-/*
-  if(layer > 0){
-    int num_of_children = search->next.size();
-    for (int iter = 0; iter < num_of_children; iter++)
-		return get_select(rank, symbol, search->next[iter], layer-1);
-  }
-  
-  */
-
-

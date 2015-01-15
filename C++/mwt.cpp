@@ -1,4 +1,3 @@
-#include <iostream>
 #include <cstring>
 #include <math.h>
 #include <sstream>
@@ -52,8 +51,6 @@ int main(int argc, char* argv[]){
 	  iter2 = 0,
 	  layer_number;
 
-
-
   // Create alphabet
   for (iter1 = 0; iter1 < input_size; iter1++){
 	 letter = input[iter1];
@@ -99,19 +96,42 @@ int main(int argc, char* argv[]){
   // Iterate over root (top layer) elements and recursively
   // generate MW tree
   for (iter1 = 0; iter1 < root->data.size(); iter1++){
-    CreateBranch(root, layers, layer_number-1, ary, iter1);
+    CreateBranch(root, layers, layer_number-1, ary, iter1);	
   }
 
+  string command;
+  int parameter1;
+  char parameter2;
 
-  // Rank
-  code_word = WordCoder((int)'T', ary, layer_number);
-  int rank = Rank(7, code_word, root);
-  cout << rank << endl;
+  do{
+	cout << "Enter command (rank/select/exit): ";
+	cin >> command;
+	cout << endl;
 
-  code_word = WordCoder((int)'A', ary, layer_number);
-  
-  int select = Select(2, code_word, root, layer_number-1);
-  cout << select << endl;
+	assert(command=="rank" || command == "select" || command == "exit");
+	
+	if (command == "rank"){
+	  // Rank
+	  cout << "Enter position: ";
+	  cin >> parameter1; cout << endl;
+	  cout << "Enter symbol: ";
+	  cin >> parameter2; cout << endl;
+
+      code_word = WordCoder((int)parameter2, ary, layer_number);
+      int rank = Rank(parameter1, code_word, root);
+      cout << rank << endl;
+	}
+	if (command == "select"){
+      // Select
+	  cout << "Enter rank: ";
+	  cin >> parameter1; cout << endl;
+	  cout << "Enter symbol: ";
+	  cin >> parameter2; cout << endl;
+      code_word = WordCoder((int)parameter2, ary, layer_number);
+      int select = Select(parameter1, code_word, root, layer_number-1);
+      cout << select << endl;
+	}
+  } while(command != "exit");
 
   getchar();
   return 0;
