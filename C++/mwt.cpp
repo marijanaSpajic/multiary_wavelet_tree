@@ -1,9 +1,14 @@
+#include <iostream>
+#include <cstdlib>
+#include <stdlib.h>
 #include <cstring>
 #include <math.h>
 #include <sstream>
 #include <fstream>
 #include <assert.h>
 #include <time.h>
+#include <algorithm>
+#include <ctime>
 #include "mwt.h"
 
 using namespace std;
@@ -11,7 +16,7 @@ using namespace std;
 int main(int argc, char* argv[]){
 
   if (argc != 3){
-	cout << "Expecting " << 2 << "parameters: filename, arity." <<endl;
+	cout << "Expecting " << 2 << " parameters: filename, arity." <<endl;
 	exit(1);
   }
   time_t timer1, timer2;
@@ -46,7 +51,7 @@ int main(int argc, char* argv[]){
   vector<int> numbered_alphabet,
 	code_word,
 	layer;
-  vector<vector<int>> code_words, 
+  vector<vector<int> > code_words, 
 	layers, 
 	coded_input;
   char letter,
@@ -55,7 +60,6 @@ int main(int argc, char* argv[]){
 	  iter2 = 0,
 	  layer_number;
   
-
   // Create alphabet
   for (iter1 = 0; iter1 < input_size; iter1++){
 	 letter = input[iter1];
@@ -90,7 +94,7 @@ int main(int argc, char* argv[]){
 	layer.clear();
   }
   reverse(layers.begin(), layers.end());
-
+ 
   // Generate MWT
  
   // Start with root 
@@ -103,9 +107,8 @@ int main(int argc, char* argv[]){
   for (iter1 = 0; iter1 < root->data.size(); iter1++){
     CreateBranch(root, layers, layer_number-1, ary, iter1);	
   }
-
-  cout << "Input: " << root->data.size() << " Generated in: " 
-	  << (time(&timer2) - timer1) << " seconds." << endl;
+  
+  cout << "Input: " << input_size << " Generated in: " << (time(&timer2) - timer1) << " seconds." << endl;
 
   string command;
   int parameter1;
@@ -133,7 +136,7 @@ int main(int argc, char* argv[]){
       code_word = WordCoder((int)parameter2, ary, layer_number);
       int rank = Rank(parameter1, code_word, root);
       cout << "Result: " << rank << endl;
-	  cout << "Time: " << time(&timer2) - timer1 << " miliseconds." << endl;
+	  cout << "Time: " << (time(&timer2) - timer1)/1000 << " miliseconds." << endl;
 	}
 	if (command == "select"){
 	  time(&timer1);
@@ -147,7 +150,7 @@ int main(int argc, char* argv[]){
       code_word = WordCoder((int)parameter2, ary, layer_number);
       int select = Select(parameter1, code_word, root, layer_number-1);
       cout << "Result: " << select << endl;
-	  cout << "Time: " << time(&timer2) - timer1 << " miliseconds." << endl;
+	  cout << "Time: " << (time(&timer2) - timer1)/1000 << " miliseconds." << endl;
 	}
   } while(command != "exit");
 
