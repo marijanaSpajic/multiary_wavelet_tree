@@ -1,12 +1,18 @@
 include Math
 
 # multiary wavelet tree implementation
-# currently, the script works only for trees up to and including base 4
+# currently, the script works only for trees up to and including arity 5 (base 4)
 
-arity = ARGV[0]
-filepath = ARGV[1]
-#arity = "4"
-#filepath = "../generate_inputs/inputs/input_3"
+start_time = Time.now
+
+filepath = ARGV[0]
+arity = ARGV[1]
+function = ARGV[2]
+arg1 = ARGV[3]
+arg2 = ARGV[4]
+
+#arity = "5"
+#filepath = "generate_inputs/inputs/input_3"
 
 arity = arity.to_i
 base = log(arity,2)
@@ -244,46 +250,74 @@ for item in sequence_transformed do
 		end
 	end
 
+
+
 inp = [""]
 
-while inp[0] != "exit" do
-	print "\nTree built.\nRank or Select?\n\n[ rank <position> <symbol> ]   [ select <rank> <symbol> ]  [ exit ]\n\n"
+inp[0] = function
+inp[1] = arg1
+inp[2] = arg2
 
-	inp = gets
+if inp[0] == "rank"
 
-	inp = inp.split
+	rank_start_time = Time.now
 
-	if inp[0] == "rank"
-		position = inp[1].to_i
-		symbol = inp[2]
-		symbol_transformed = transformation[symbol]
+	position = inp[1].to_i
+	symbol = inp[2]
+	symbol_transformed = transformation[symbol]
 
 		# do rank
 		# 4-level tree
 
-		res = findRank(position, symbol_transformed, 0, layers)
+	res = findRank(position, symbol_transformed, 0, layers)
 
-		print res
-		print "\n"
+	rank_end_time = Time.now
 
-		end
+	print "\n"
+	print inp[0]
+	print " "
+	print inp[1]
+	print " "
+	print inp[2]
+	print " : "
+	print res
+	print "\n"
+	print "\n"
 
-	if inp[0] == "select"
-		rank = inp[1].to_i
-		symbol = inp[2]
-		symbol_transformed = transformation[symbol]
+	end
+
+if inp[0] == "select"
+
+	select_start_time = Time.now
+
+	rank = inp[1].to_i
+	symbol = inp[2]
+	symbol_transformed = transformation[symbol]
 	
 		# do select
 
-		res = doSelect(rank, symbol_transformed, 3, layers)
+	res = doSelect(rank, symbol_transformed, 3, layers)
 
-		print res
-		print "\n"
+	select_end_time = Time.now
 
-		end
-	
+	print "\n"
+	print inp[0]
+	print " "
+	print inp[1]
+	print " "
+	print inp[2]
+	print " : "
+	print res
+	print "\n"
+	print "\n"
+
 	end
+	
+built_time = Time.now
 
 
-print "The End\n\n"
+print "Total time: \n"
+print built_time-start_time
+print "\n"
+print "\n"
 
