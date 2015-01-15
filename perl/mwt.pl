@@ -113,7 +113,6 @@ sub select_mwt {
 		$j=0;
 		$count = 0;
 		
-		print "$key ";
 		$key = substr($key, 0, -1);
 		if ($key eq ""){
 			$key='root';
