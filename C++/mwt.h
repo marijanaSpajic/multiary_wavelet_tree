@@ -5,6 +5,8 @@
 using namespace std;
 
 // Translate alphabet letters into ASCII values
+// Input: alphabet in char
+// Output: vector of numbered alphabet symbols (ASCII)
 vector<int> NumberedAlphabet(char alphabet[]){
   vector<int> numbered_alphabet;
   int iter;
@@ -20,7 +22,9 @@ vector<int> NumberedAlphabet(char alphabet[]){
 vector<int> WordCoder(int quotient, int ary, int number_of_digits){
   int digits = 1, remainder = 0;
   vector<int> code_word;
-    while(0 != quotient){
+  
+  // Calculate digit in new base and add to code word vector
+  while(0 != quotient){
 	  remainder = quotient%ary;
 	  code_word.push_back(remainder);
 	  digits++;
@@ -36,11 +40,14 @@ vector<int> WordCoder(int quotient, int ary, int number_of_digits){
 }
  
 // Translates numbered alphabet into coded words (depending on arity)
+// Input: numbered alphabet, arity, number of layers = number of digits
+// Output: Vector of coded alphabet symbols
 vector<vector<int>> GenerateCodeAlphabet(vector<int> numbered_alphabet, int ary, int number_of_digits) {
   int iter, quotient, remainder = 0;
   vector<int> code_word;
   vector<vector<int>> coded_words;
   
+  // Iterate over numbered alphabet (ASCII)
   for(iter = 0; iter < numbered_alphabet.size(); iter++){
 
 	code_word = WordCoder(numbered_alphabet[iter], ary, number_of_digits);
@@ -54,12 +61,13 @@ vector<vector<int>> GenerateCodeAlphabet(vector<int> numbered_alphabet, int ary,
 
 // Structure of a MW tree node
 typedef struct node {
-
   vector<int> data;
   vector<node*> next;  
 } node;
 
 // Initializes non-root node
+// Input: arity
+// Output: pointer to new node
 node* InitNode(int ary){
   node *current = new node;
   for(int iter = 0; iter < ary; iter++){
@@ -69,15 +77,18 @@ node* InitNode(int ary){
 }
 
 // Initalizes root node
+// Input: arity
+// Output: pointer to new root
 node* InitRoot(int ary){
   node *root = new node;
   for(int iter = 0; iter < ary; iter++){
-  root->next.push_back(NULL);
+    root->next.push_back(NULL);
   }
   return root;
 }
 
 // Recursive; generates a single MW tree branch (down to the root)
+// Input: root node, layered symbol sequences, top layer, arity, index in sequence
 void CreateBranch(node *parent, vector<vector<int>> layers, int layer, int ary, int index){
   node *current;
 
@@ -94,7 +105,7 @@ void CreateBranch(node *parent, vector<vector<int>> layers, int layer, int ary, 
 	
 	CreateBranch(current, layers, layer-1, ary, index);
     
-	// Add data to existing child
+  // Add data to existing child
   } 
   else if (NULL != parent->next[layers[layer][index]]){
 
@@ -105,22 +116,27 @@ void CreateBranch(node *parent, vector<vector<int>> layers, int layer, int ary, 
 }
 
 // Calculates rank of symbol.
+// Input: position of required rank, coded alphabet simbol, MWT root node
+// Output: Rank of symbol to position
 int Rank(int position, vector<int> symbol, node *search){
   vector<int> next;
-  int counter = 0, current = symbol[0];
+  int counter = 0, 
+	  current = symbol[0]; // Read first bit of coded symbol
 
-  
+  // Count current symbol in node data
   for (int iter = 0; iter < position; iter++){
 	if(current == search->data[iter])
 		counter++;
   }
   
+  // Return counter if at last bit of the simbol
   if (1 == symbol.size())
 	  return counter;
+  // Else check next layer (symbol stripped of current bit)
   else
   {
 	for (int iter = 1; iter < symbol.size(); iter++)
-	next.push_back(symbol[iter]);
+	  next.push_back(symbol[iter]);
     return Rank(counter, next, search->next[current]);
   }
   

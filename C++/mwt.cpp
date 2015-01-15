@@ -3,6 +3,7 @@
 #include <sstream>
 #include <fstream>
 #include <assert.h>
+#include <time.h>
 #include "mwt.h"
 
 using namespace std;
@@ -13,6 +14,9 @@ int main(int argc, char* argv[]){
 	cout << "Expecting " << 2 << "parameters: filename, arity." <<endl;
 	exit(1);
   }
+  time_t timer1, timer2;
+
+  time(&timer1);
 
   // Get arity from user
   int ary = atoi(argv[2]);
@@ -37,7 +41,7 @@ int main(int argc, char* argv[]){
 
   fclose(file);
 
-  // Declarations
+  // Variable declarations
   const char *newLetter;
   vector<int> numbered_alphabet,
 	code_word,
@@ -50,6 +54,7 @@ int main(int argc, char* argv[]){
   int iter1, 
 	  iter2 = 0,
 	  layer_number;
+  
 
   // Create alphabet
   for (iter1 = 0; iter1 < input_size; iter1++){
@@ -99,37 +104,50 @@ int main(int argc, char* argv[]){
     CreateBranch(root, layers, layer_number-1, ary, iter1);	
   }
 
+  cout << "Input: " << root->data.size() << " Generated in: " 
+	  << (time(&timer2) - timer1) << " seconds." << endl;
+
   string command;
   int parameter1;
   char parameter2;
 
+  // Input data from user and compute rank/select
   do{
 	cout << "Enter command (rank/select/exit): ";
 	cin >> command;
-	cout << endl;
 
-	assert(command=="rank" || command == "select" || command == "exit");
-	
+	if(command=="rank" && command == "select" && command == "exit"){
+		cout << "Invalid input." << endl;
+		continue;
+	}
+	  
 	if (command == "rank"){
+	  time(&timer1);
+
 	  // Rank
 	  cout << "Enter position: ";
-	  cin >> parameter1; cout << endl;
+	  cin >> parameter1;// cout << endl;
 	  cout << "Enter symbol: ";
-	  cin >> parameter2; cout << endl;
+	  cin >> parameter2;// cout << endl;
 
       code_word = WordCoder((int)parameter2, ary, layer_number);
       int rank = Rank(parameter1, code_word, root);
-      cout << rank << endl;
+      cout << "Result: " << rank << endl;
+	  cout << "Time: " << time(&timer2) - timer1 << " miliseconds." << endl;
 	}
 	if (command == "select"){
-      // Select
+	  time(&timer1);
+      
+	  // Select
 	  cout << "Enter rank: ";
-	  cin >> parameter1; cout << endl;
+	  cin >> parameter1;
 	  cout << "Enter symbol: ";
-	  cin >> parameter2; cout << endl;
+	  cin >> parameter2;
+
       code_word = WordCoder((int)parameter2, ary, layer_number);
       int select = Select(parameter1, code_word, root, layer_number-1);
-      cout << select << endl;
+      cout << "Result: " << select << endl;
+	  cout << "Time: " << time(&timer2) - timer1 << " miliseconds." << endl;
 	}
   } while(command != "exit");
 
