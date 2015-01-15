@@ -1,12 +1,15 @@
 include Math
 
 # multiary wavelet tree implementation
-# currently, the script works only for trees up to and including base 4
+# currently, the script works only for trees up to and including arity 5 (base 4)
 
-arity = ARGV[0]
-filepath = ARGV[1]
-#arity = "4"
-#filepath = "../generate_inputs/inputs/input_3"
+start_time = Time.now
+
+filepath = ARGV[0]
+arity = ARGV[1]
+function = ARGV[2]
+arg1 = ARGV[3]
+arg2 = ARGV[4]
 
 arity = arity.to_i
 base = log(arity,2)
@@ -15,6 +18,7 @@ base = base.ceil
 base = base.to_i
 
 
+# implementation of rank function
 def findRank(position, symbol, i, layers)
 	count = 0
 
@@ -73,7 +77,7 @@ def findRank(position, symbol, i, layers)
 end
 
 
-
+#implementation of select function
 def doSelect(rank, symbol, i, layers)
 
 	if i == 3
@@ -167,7 +171,7 @@ for character in alphabet_ascii do
 	end
 
 
-# translation dictionary from original alphabet to base_n
+# create translation dictionary from original alphabet to base_n
 
 transformation = { alphabet[0] => alphabet_basen[0], alphabet[1] => alphabet_basen[1], alphabet[2] => alphabet_basen[2], alphabet[3] => alphabet_basen[3] }
 
@@ -184,13 +188,6 @@ while i<sequence.length do
 	end
 
 
-
-# test data
-
-#sequence_transformed = ["312", "003", "030", "111", "233", "003", "101", "312", "112", "303"]
-#sequence_transformed = ["1003", "1013", "1110", "1001", "1013"]
-
-#sequence_transformed = sequence_transformed[0:4]
 
 
 
@@ -219,8 +216,9 @@ while i<sequence.length do
 #	end
 
 
-# this bit is pretty nasty and one should strive to do better
+# the following section is pretty nasty and one should strive to do better
 # problem: ruby uses pointers instead of making copies of arrays in the loop above
+# therefore the tree and mwt functions are hardcoded for up to arity 5 (base 4)
 
 if base == 3
 	layers = [[],[[],[],[],[]],[[[],[],[],[]],[[],[],[],[]],[[],[],[],[]],[[],[],[],[]]]]
@@ -229,7 +227,8 @@ if base == 4
 	layers = [[], [[], [], [], []], [[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]], [[[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]], [[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]], [[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]], [[[], [], [], []], [[], [], [], []], [[], [], [], []], [[], [], [], []]]]]
 	end
 
-# this bit only really works up to base 4
+
+# arrange data in tree
 
 for item in sequence_transformed do
 	layers[0] << item[0]
@@ -244,46 +243,73 @@ for item in sequence_transformed do
 		end
 	end
 
+
+
 inp = [""]
 
-while inp[0] != "exit" do
-	print "\nTree built.\nRank or Select?\n\n[ rank <position> <symbol> ]   [ select <rank> <symbol> ]  [ exit ]\n\n"
+inp[0] = function
+inp[1] = arg1
+inp[2] = arg2
 
-	inp = gets
+if inp[0] == "rank"
 
-	inp = inp.split
+	rank_start_time = Time.now
 
-	if inp[0] == "rank"
-		position = inp[1].to_i
-		symbol = inp[2]
-		symbol_transformed = transformation[symbol]
+	position = inp[1].to_i
+	symbol = inp[2]
+	symbol_transformed = transformation[symbol]
 
 		# do rank
-		# 4-level tree
 
-		res = findRank(position, symbol_transformed, 0, layers)
+	res = findRank(position, symbol_transformed, 0, layers)
 
-		print res
-		print "\n"
+	rank_end_time = Time.now
 
-		end
+	print "\n"
+	print inp[0]
+	print " "
+	print inp[1]
+	print " "
+	print inp[2]
+	print " : "
+	print res
+	print "\n"
+	print "\n"
 
-	if inp[0] == "select"
-		rank = inp[1].to_i
-		symbol = inp[2]
-		symbol_transformed = transformation[symbol]
+	end
+
+if inp[0] == "select"
+
+	select_start_time = Time.now
+
+	rank = inp[1].to_i
+	symbol = inp[2]
+	symbol_transformed = transformation[symbol]
 	
 		# do select
 
-		res = doSelect(rank, symbol_transformed, 3, layers)
+	res = doSelect(rank, symbol_transformed, 3, layers)
 
-		print res
-		print "\n"
+	select_end_time = Time.now
 
-		end
-	
+	print "\n"
+	print inp[0]
+	print " "
+	print inp[1]
+	print " "
+	print inp[2]
+	print " : "
+	print res
+	print "\n"
+	print "\n"
+
 	end
+	
+built_time = Time.now
 
 
-print "The End\n\n"
+print "Total time: \n"
+print built_time-start_time
+print "\n"
+print "\n"
 
