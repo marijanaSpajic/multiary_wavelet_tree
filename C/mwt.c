@@ -7,7 +7,7 @@ typedef struct Node Node;
 struct Node {
     int *data;
     Node **child;
-    Node *next;
+    Node *parent;
     int numOfValues;
 };
 
@@ -18,20 +18,20 @@ Node * createTree(char *inputStream, int fileLength, int **alphabet, int arity, 
     (*root).data = (int *)malloc(fileLength*sizeof(int));
     (*root).data[0] = -1;
     (*root).child = (Node **)malloc(arity*sizeof(Node*));
-    (*root).next = NULL;
+    (*root).parent = NULL;
     (*root).numOfValues = 0;
     int i;
     for(i = 0; i < arity; i++){
         Node* child = (Node *)malloc(sizeof(Node));
         (*child).data = (int *)malloc(sizeof(int));
         (*child).data[0] = -1;
+        (*child).parent = root;
         (*root).child[i] = child;
     }
 
     //for each character in input stream
     for (i = 0; i < fileLength; i++){
         int c = inputStream[i];
-        printf("%d \n", c);
         int *codeValue = alphabet[c];
 
         //save each digit to appropriate node
@@ -42,33 +42,23 @@ Node * createTree(char *inputStream, int fileLength, int **alphabet, int arity, 
             //put first digit in root
             if(j==0){
                 (*root).data[i] = digit;
-                printf("ROOT: %d \n", (*root).data[i]);
                 (*root).numOfValues = (*root).numOfValues + 1;
             }
             else {
                   Node* node = (*temp).child[codeValue[j-1]];
-                  printf("test: %d \n", (*node).data[0]);
                     //create child if doesn't exist
                 if((*node).data[0] == -1){
                     (*node).data[0] = digit;
-                printf("CHILD: %d \n", (*node).data[0]);
                     (*node).numOfValues = 1;
                     (*node).child = (Node **)malloc(arity*sizeof(Node*));
-                    (*node).next = (Node *)malloc(sizeof(Node));
+                    (*node).parent = (Node *)malloc(sizeof(Node));
                     int k;
                     for(k = 0; k < arity; k++){
                         Node* children = (Node *)malloc(sizeof(Node));
                         (*children).data = (int *)malloc(sizeof(int));
                         (*children).data[0] = -1;
+                        (*children).parent = node;
                         (*node).child[k] = children;
-                        printf("dijete: %d \n", k);
-                    }
-                    if(digit < (arity-1)) {
-                        int valueOfNext = codeValue[j-1] + 1;
-                        (*temp).child[codeValue[j-1]]->next = (*temp).child[valueOfNext];
-                    }
-                    else {
-                        (*temp).child[codeValue[j-1]]->next = NULL;
                     }
                     temp = node;
                 }
@@ -77,13 +67,11 @@ Node * createTree(char *inputStream, int fileLength, int **alphabet, int arity, 
                     int size = (*node).numOfValues + 1;
                     (*node).data = (int *) realloc((*temp).child[codeValue[j-1]]->data, size*sizeof(int));
                     (*node).data[size-1] = digit;
-                    printf("CHILD NODE EXISTS: %d \n", (*node).data[size-1]);
                     (*node).numOfValues = (*node).numOfValues + 1;
                     temp = node;
                 }
             }
             }
-           // printf("kraj");
     }
     return root;
 }
@@ -121,10 +109,9 @@ int main (int argc, char *argv[]){
     }
 
     int *alphabet[128] = {NULL};
-    //printf("%p\n", *alphabet);
     int arity = atoi(argv[2]);
     int treeLayers = ceil(7/log2(arity));
-    printf("Number of layers: %d \n", treeLayers);
+    //printf("Number of layers: %d \n", treeLayers);
 
     //open file and get file length
     FILE *file;
@@ -151,19 +138,7 @@ int main (int argc, char *argv[]){
             }
     fclose(file);
 
-    //test code values of alphabet
-    int j;
-    int k = 0;
-    for (j = 0; j < 128; j++){
-        if(alphabet[j] != NULL){
-            for(k = 0; k < treeLayers; k++){
-                printf("%d", alphabet[j][k]);
-            }
-        printf("\n");
-        }
-    }
-
-   Node * root = createTree(&inputStream[0], fileLength, &alphabet[0], arity, treeLayers);
+    Node * root = createTree(&inputStream[0], fileLength, &alphabet[0], arity, treeLayers);
 
 return 0;
 }
