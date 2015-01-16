@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class Node extends Root{
@@ -14,15 +15,18 @@ public class Node extends Root{
 	}
 	
 	public void setData(ArrayList<Integer> list_signs) {
-		this.index = list_signs.remove(0);
+		//Collections.copy(this.list_signs, list_signs);
+		this.list_signs.addAll(list_signs);
+		this.index = this.list_signs.remove(0);
 		this.data.add(this.index);
 		
-		if(list_signs.size() > 0) {
+		if(this.list_signs.size() > 0) {
 			if(!this.children.containsKey(this.index)) {
 				this.CreateChild(this.index);
 			}
-			this.children.get(this.index).setData(list_signs);
+			this.children.get(this.index).setData(this.list_signs);
 		}
+		this.list_signs.clear();
 		
 	}
 }
