@@ -1,35 +1,30 @@
 package WaveletTree;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
 public class Rank {
 	
-	public static void RankFunction(int number, String character, String queue, int cardinality) {
-		queue = queue.replace("\r\n", "").replace("\n", "");
-		 int length = queue.length()*cardinality;
-		int i = 0, nextNumber = 0;
-		int firstNumber = number;
-		String a = "";
+	public static void Rank_fuction(Node rootNode, int position, int num_layers, int[] character) {
+		int i, digit;
+		int rank = 0;
+		Node node = rootNode;
 		
-		while(i < length) {
-			a = WaveletTree.ReturnLevel(queue, cardinality, i);
-			System.out.println(firstNumber + "," + character.charAt(i) + "," + a);
-			nextNumber = Recursion(firstNumber, character.charAt(i), a);
-			firstNumber = nextNumber;
-			i++;
+		for(i = 0; i < num_layers; i++) {
+			digit = character[i];
+			rank = RankLayer(node, position, digit);
+			position = rank;
+			node = node.children.get(digit);
 		}
-		System.out.println("Rank(" + number + "," + character + ") = " + nextNumber);
+		
 	}
 	
-	public static int Recursion(int number, char character, String level) {	
-		int i, count = 0;
+	public static int RankLayer(Node rootNode, int position, int digit) {
+		int i = 0;
+		int rank = 0;
 		
-		for(i = 0; i < number; i++) {
-			if(character == level.charAt(i)) {
-				count++;
+		for (i = 0; i < position; i++) {
+			if(rootNode.value[0] == digit) {
+				rank++;
 			}
 		}
-		return count;
+		return rank;
 	}
 }

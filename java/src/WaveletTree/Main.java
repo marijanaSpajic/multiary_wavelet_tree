@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 
 public class Main {
 
@@ -32,18 +31,24 @@ public class Main {
 			if(number < 2 || number > everything.length()) {
 				System.out.println("Error!");
 			}
+			
 			else {
+				//time to executed method
+				long startTime = System.currentTimeMillis();
+
 				WaveletTree.WaveletTrees(everything, number);
+
+				long endTime = System.currentTimeMillis();
+				System.out.println("That took " + (endTime - startTime) + " milliseconds");
+				
+				Runtime runtime_max = Runtime.getRuntime();
+				Runtime runtime_free = Runtime.getRuntime();
+				
+				double memoryUsage = (double)runtime_max.totalMemory()/1024 - (double)runtime_free.freeMemory()/1024;
+				System.out.println("Memory usage: " + memoryUsage);
 			}
 	    }	finally {
 	    		queueInput.close();
 	    }
 	   }
 	 }
-		
-		/*System.out.print("Enter the queue: ");
-			queue = queueInput.readLine();
-		
-		if(queue.length() == 0) {
-			System.out.println("Error!");
-		}*/

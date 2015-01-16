@@ -11,85 +11,118 @@ public class WaveletTree {
 	public static void WaveletTrees(String queue, int number) throws IOException{
 		
 		int i, j;
-		String temp = "";
-		String asciiQueue = "";
-		String intoBase[]= new String[number*queue.length()];
-		String level[] = new String[queue.length()];
-		queue = queue.replace("\r\n", "").replace("\n", "");
-		int numberOfLevels;
+		int intoBase[]= new int[number*queue.length()];
+		int number_layers;
 		
-		//conver into acsii
-		for(i = 0; i < queue.length(); i++) {
-			intoBase[i] = Integer.toString((int)queue.charAt(i), number);
-			asciiQueue += intoBase[i];
-		}
+		queue = queue.replace("\r\n", "").replace("\n", "");
 		
 		//number of levels
-		numberOfLevels = (int)(7/(Math.log(number)/Math.log(2)));
+		number_layers = (int)(7/(Math.log(number)/Math.log(2)));
 		
-		//root node
-		int k = 0;
-		while(k < queue.length()*number) {
-			 temp += Character.toString(asciiQueue.charAt(k));
-			 level[0] = temp;
-			k += number;
-		}
 		
-		System.out.println("level0: " + level[0]);
-		Node node = Algorithm(queue, level[0], number);
+		Node node = CreateTree(queue, number);
 		
 		
 		String queueFunction;
 		int paramNumber;
 		String paramChar;
+		boolean temp = true;
 		
 		BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 		
 		System.out.print("Enter function rank or select:");
 		queueFunction = input.readLine();
-		while(!queueFunction.equals("rank") && !queueFunction.equals("select")) {
-			System.out.print("Error! Enter again:");
-			queueFunction = input.readLine();
-		}
-		if(queueFunction.equals("rank")) {
-			//koliko se puta znak pojavljuje u nizu
-			BufferedReader inputNumber = new BufferedReader(new InputStreamReader(System.in));
-			System.out.print("Enter number");
-			paramNumber = Integer.parseInt(inputNumber.readLine());
+		while(temp) {
+			if(queueFunction.equals("rank")) {
+		
+				BufferedReader inputNumber = new BufferedReader(new InputStreamReader(System.in));
+				System.out.print("Enter number");
+				paramNumber = Integer.parseInt(inputNumber.readLine());
+				
+				BufferedReader inputChar = new BufferedReader(new InputStreamReader(System.in));
+				System.out.print("Enter character");
+				paramChar = inputChar.readLine();
+				
+				
+				//Rank.Rank_fuction(node, paramNumber, number_layers, intoBase);	
+			}
 			
-			BufferedReader inputChar = new BufferedReader(new InputStreamReader(System.in));
-			System.out.print("Enter character");
-			paramChar = inputChar.readLine();
-			//System.out.println(listOfLevels);
+			else if(queueFunction.equals("select")){
+				
+				BufferedReader inputNumber = new BufferedReader(new InputStreamReader(System.in));
+		
+				System.out.print("Enter number");
+				paramNumber = Integer.parseInt(inputNumber.readLine());
+				
+				BufferedReader inputChar = new BufferedReader(new InputStreamReader(System.in));
+				System.out.print("Enter character");
+				paramChar = inputChar.readLine();
+				
+				//Select.Select_function(node, paramNumber, num_layers, number, length)
+			}
 			
-			Rank.RankFunction(paramNumber, Integer.toString((int)paramChar.charAt(0), number), queue, number);	
-		}
-		else if(queueFunction.equals("select")){
-			BufferedReader inputNumber = new BufferedReader(new InputStreamReader(System.in));
-			System.out.print("oujeeea");
+			else if(queueFunction.equals("exit")) {
+				temp = false;
+				break;
+			}
+			
+			else {
+				System.out.print("Error! Enter again:");
+			}
 		}
 	}
 	
-	public static Node Algorithm(String queue, String root, int number) {
-		String intoBase[]= new String[number*queue.length()];
-		int z,v;
-		Node rootNode = new Node(null, root , 0);
+	
+	public static Node CreateTree(String queue, int number) {		
+		int i, j, k;
+		String intoBase[] = new String[number*queue.length()];
+		
+		Node rootNode = new Node(null, 0);
 		
 		Node nodeLevel1;
 		Node nodeLeveln;
 		
-		for(int i = 0; i < number; i++) {
-			Node child = new Node(null, null, -1);
+		for(i = 0; i < number; i++) {
+			Node child = new Node(rootNode, -1);
 			rootNode.addChild(child, i);
 		}
 		
-		for(z = 0; z < queue.length(); z++) {
-			intoBase[z] = Integer.toString((int)queue.charAt(z), number);
+		for(j = 0; j < queue.length(); j++) {
+			intoBase[j] = Integer.toString((int)(queue.charAt(j)), number);
 			Node temporaryNode = rootNode;
-			for(v = 1; v < number; v++) {
-				if(v == 1) {
+			for(k = 0; k < number; k++) {
+				if(k == 0) {
+					rootNode.value[j] += Integer.parseInt(Character.toString(intoBase[j].charAt(k)));
+					rootNode.numberOfValue = rootNode.numberOfValue + 1;
+				}
+				
+				else {
+					Node node = temporaryNode.children.get(temporaryNode.value);
+					
+					if((node.value[0]) == -1) {
+						node.value[0] += Integer.parseInt(Character.toString(intoBase[j].charAt(k)));
+						node.numberOfValue = 1;
+						
+						for(i = 0; i < number; i++) {
+							Node children = new Node(rootNode, -1);
+							node.addChild(children, i);
+						}
+						
+						temporaryNode = node;
+					}
+					else {
+						int size = node.numberOfValue + 1;
+						node.value[size-1] += Integer.parseInt(Character.toString(intoBase[j].charAt(k)));
+						node.numberOfValue = node.numberOfValue;
+						temporaryNode = node;
+					}
+				}
+			}
+		}
+		return rootNode;
+	}
 					//create child if doesn't exist
-					if(rootNode.children.get(Integer.parseInt(Character.toString(rootNode.value.charAt(z)))).index == -1) {
+					/*if(rootNode.children.get(Integer.parseInt(Character.toString(rootNode.value.charAt(z)))).index == -1) {
 						nodeLevel1 = new Node(rootNode.value, Character.toString(intoBase[z].charAt(v)), Integer.parseInt(Character.toString(intoBase[z].charAt(0))));
 						//create childNode
 						for(int i = 0; i < number; i++) {
@@ -130,39 +163,5 @@ public class WaveletTree {
 						temporaryNode = temporaryNode.children.get(Integer.parseInt(Character.toString(temporaryNode.value.charAt(temporaryNode.value.length()))));
 					}
 				}
-			}
-		}
-		return rootNode;
-	}
-
-	public static String ReturnLevel(String queue, int number, int m) {
-		int i;
-		String asciiQueue = "";
-		String intoBase[]= new String[number*queue.length()];
-		String listOfLevels = "";
-		
-		for(i = 0; i < queue.length(); i++) {
-			intoBase[i] = Integer.toString((int)queue.charAt(i), number);
-			asciiQueue += intoBase[i];
-		}
-		
-		while(m < queue.length()*number) {
-			listOfLevels += Character.toString(asciiQueue.charAt(m));
-			m += number;
-		}
-		System.out.println(listOfLevels);
-		return listOfLevels;
-	}
-	
-	public static void Root(String rootNode, String queue, int number) {
-		String asciiQueue = "";
-		String intoBase[]= new String[number*queue.length()];
-		int i;
-		
-		System.out.println(rootNode);
-		for(i = 0; i < queue.length(); i++) {
-			intoBase[i] = Integer.toString((int)queue.charAt(i), number);
-			asciiQueue += intoBase[i];
-		}
-	}
+			}*/
 }

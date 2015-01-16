@@ -7,16 +7,18 @@ import java.util.List;
 public class Node {
 	
 	HashMap<Integer, Node> children = new HashMap<Integer,Node>();
-	String value;
-	String parent;
+	int[] value;
+	Node parent;
 	int index;
+	int numberOfValue;
 	
-	public Node (String parent, String value, int index){
+	public Node (Node parent, int index){
 		
 		this.children = new HashMap<Integer,Node>();
 		this.value = value;
 		this.parent = parent;
 		this.index = index;
+		this.numberOfValue = 0;
 	}
 	
 	public void addChild(Node child, int index) {
