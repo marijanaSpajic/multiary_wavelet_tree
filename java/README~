@@ -9,7 +9,7 @@ Program se kompajlira naredbom:
 
 Zatim je potrebno postaviti CLASSPATH, odnosno put do bin drektorija u kojem se nalazi mwt.class i upisati parametre: naziv datoteke i kratnost:
 
-> CLASSPATH=~/<put_do_bin_foldera> java mwt input_4 3 (ako se bin class datoteke ne nalaze u istom folderu kao java datoteke)
+> CLASSPATH=~/<put_do_bin_foldera> java mwt input_4 3
 
 gdje je "input_4" naziv datoteke, a broj 3 označava kratnost.
 
@@ -30,6 +30,8 @@ Kompajlirati i pokrenuti program
 
 > javac mwt.java
 > java mwt <naziv datoteke> <kratnost>
+
+
 
 
 Nakon učitavanja parametara (datoteka, kratnost) počinje se stvarati stablo. Nakon završetka stvaranja stabla korisniku se ispisuje poruka da je stablo izgrađeno, kao i vrijeme potrebno za izgradnju stabla i zauzeće memorije u KB. Nakon toga korisniku se ponudi mogućnost računanja funkcije rank i select tako da se u komandnu liniju upiše rank ili select nakon čega korisnik može upisati poziciju i simbol.

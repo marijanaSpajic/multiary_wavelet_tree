@@ -39,9 +39,12 @@ public class mwt {
 	
 	//rank(position, symbol)
 	public static int Rank(Root root, int position, char character) {
-		ArrayList<Integer> char_into_base = alphabet.get(character);
+		ArrayList<Integer> char_into_base = new ArrayList<Integer>();
+		
 		int digit, rank = 0;
 		Root rootNode = root;
+		
+		char_into_base.addAll(alphabet.get(character));
 		
 		digit = char_into_base.remove(0);
 		rank = Rank_layer(rootNode, position, digit);
@@ -58,7 +61,7 @@ public class mwt {
 			node = node.children.get(digit);
 			position = rank;
 		}
-		
+		char_into_base.clear();
 		return rank;
 	}
 	
@@ -90,8 +93,8 @@ public class mwt {
 		digit = char_into_base.get(0);
 		node = rootNode.children.get(digit);
 		
-		for(i = 1; i < char_into_base.size()-1; i++) {
-			digit = char_into_base.get(i);
+		for(i = 0; i < char_into_base.size()-2; i++) {
+			digit = char_into_base.get(i+1);
 			node = node.children.get(digit);
 		}
 		
@@ -99,14 +102,13 @@ public class mwt {
 		
 		while(char_into_base.size() > 0) {
 			digit = char_into_base.remove(0);
-			//root node
+			//nodes
 			if(!temp) {
 				select = Select_layer(node, num_repeat, digit);
 			}
-			//other nodes
+			//root nodes
 			else{
-				select= Select_root(root, num_repeat, digit);
-				
+				select = Select_root(root, num_repeat, digit);
 			}
 			
 			if(select == -1) {
@@ -120,21 +122,26 @@ public class mwt {
 			
 			if(node.parent == null) {
 				root = node.parent_root;
-				temp = true;
-				
+				temp = true;	
 			}
 			else {
 				node = node.parent;
 			}
 			
 			num_repeat = select + 1;
+			
 		}
+		char_into_base.clear();
 		return select;
 	}
 	
 	public static int Select_layer(Node node, int num_repeat, int digit) {
 		int select = 0, i;
 		ArrayList<Integer> data = node.getData();
+		
+		if(num_repeat > data.size()) {
+			return -1;
+		}
 		
 		for(i = 0; i < data.size(); i++) {
 			if(data.get(i) == digit) {
@@ -205,6 +212,7 @@ public class mwt {
 				
 				root.Add_signs(alphabet.get(i));
 			}
+			System.out.println("Creating tree finished!");
 			
 			
 			long endTime = System.currentTimeMillis();
@@ -244,7 +252,7 @@ public class mwt {
 					 System.out.println("Rank = " + rank);
 					 
 					 endTimeCommand = System.currentTimeMillis();
-					 System.out.println("That took " + (endTimeCommand - startTimeCommand) + " milliseconds");
+					 System.out.println("Time: " + (endTimeCommand - startTimeCommand) + " milliseconds");
 						
 					 runtime_max_command = Runtime.getRuntime();
 					 runtime_free_command = Runtime.getRuntime();
@@ -265,25 +273,29 @@ public class mwt {
 					 startTimeCommand = System.currentTimeMillis();
 					 
 					 int select = Select(root, _rank, symbol);
-					 System.out.println(_rank + ". " + "character " + symbol + " is on position: " + select);
+					 if(select == -1) {
+						 System.out.println("There aren't that many symbols in input file");
+					 }
+					 else {
+						 System.out.println(_rank + ". " + "character " + symbol + " is on position: " + select);
+						 
+						 endTimeCommand = System.currentTimeMillis();
+						 System.out.println("Time: " + (endTimeCommand - startTimeCommand) + " milliseconds");
+							
+						 runtime_max_command = Runtime.getRuntime();
+						 runtime_free_command = Runtime.getRuntime();
+							
+						 memoryUsage_command = (double)runtime_max_command.totalMemory()/1024 - (double)runtime_free_command.freeMemory()/1024;
+						 System.out.println("Memory usage: " + memoryUsage_command  + " KB");
+					 }
 					 
-					 endTimeCommand = System.currentTimeMillis();
-					 System.out.println("Time: " + (endTimeCommand - startTimeCommand) + " milliseconds");
-						
-					 runtime_max_command = Runtime.getRuntime();
-					 runtime_free_command = Runtime.getRuntime();
-						
-					 memoryUsage_command = (double)runtime_max_command.totalMemory()/1024 - (double)runtime_free_command.freeMemory()/1024;
-					 System.out.println("Memory usage: " + memoryUsage_command  + " KB");
 			}
 				else if(function.equals("exit")) {
 					temp = false;
 					break;
 				}
 		}
-
 			fileScanner.close();
-			
 		}
 		
 		finally {
